@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>KisanMandi — Farmer Market Price Reference & Offer Evaluation Platform</title>
+  <meta name="description" content="Know recent reported market price ranges and evaluate buyer offers objectively with neutral, sourced benchmark data.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global App Header -->
+  <header class="app-header" role="banner">
+    <div class="container header-container">
+      <div class="brand-block" role="button" tabindex="0" onclick="navigateTo('home')">
+        <div class="brand-logo" aria-hidden="true">🌾</div>
+        <div class="brand-text">
+          <h1 class="brand-title" data-i18n="app_title">KisanMandi</h1>
+          <p class="brand-tagline" data-i18n="app_tagline">Market Price Reference &amp; Offer Evaluation</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Hindi/English Toggle -->
+        <div class="lang-toggle" role="group" aria-label="Language selection">
+          <button type="button" class="lang-btn active" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
+          <button type="button" class="lang-btn" id="btn-lang-hi" onclick="setLanguage('hi')">हिंदी</button>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <nav class="desktop-nav" role="navigation" aria-label="Primary Navigation">
+          <button type="button" class="nav-link active" data-page="home" onclick="navigateTo('home')">
+            <span class="nav-icon">📊</span>
+            <span data-i18n="nav_price_ref">Price Reference</span>
+          </button>
+          <button type="button" class="nav-link nav-highlight" data-page="check-offer" onclick="navigateTo('check-offer')">
+            <span class="nav-icon">⚖️</span>
+            <span data-i18n="nav_check_offer">Check My Offer</span>
+          </button>
+          <button type="button" class="nav-link" data-page="schemes" onclick="navigateTo('schemes')">
+            <span class="nav-icon">🏛️</span>
+            <span data-i18n="nav_schemes">Government Schemes</span>
+          </button>
+          <button type="button" class="nav-link" data-page="about" onclick="navigateTo('about')">
+            <span class="nav-icon">ℹ️</span>
+            <span data-i18n="nav_about">How It Works</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Quick Demo Pills Bar -->
+  <aside class="demo-bar" aria-label="Quick Demo Combinations">
+    <div class="container demo-container">
+      <span class="demo-label">
+        <span class="demo-sparkle">⚡</span>
+        <strong data-i18n="demo_quick_label">Quick Demo:</strong>
+      </span>
+      <div class="demo-pills" id="demo-pills-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content" id="main-content" role="main">
+    <!-- ============================================== -->
+    <!-- VIEW 1: HOME / PRICE REFERENCE                 -->
+    <!-- ============================================== -->
+    <section id="view-home" class="page-view active" aria-labelledby="home-heading">
+      <div class="container narrow-container">
+        
+        <!-- Hero Message -->
+        <div class="hero-card">
+          <span class="hero-chip" data-i18n="hero_chip">Information Access Tool</span>
+          <h2 id="home-heading" class="hero-headline" data-i18n="hero_title">
+            Know the reported market range before you negotiate.
+          </h2>
+          <p class="hero-subtext" data-i18n="hero_subtitle">
+            Access recent mandi price benchmarks sourced from Agmarknet. Neutral, transparent data with no price guarantees.
+          </p>
+        </div>
+
+        <!-- Crop & Location Selection Form -->
+        <div class="card form-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span class="card-step-num">1</span>
+              <span data-i18n="form_step1_title">Select Crop &amp; Location</span>
+            </h3>
+            <span class="badge badge-neutral" data-i18n="badge_mandi_data">Mandi Reference</span>
+          </div>
+
+          <form id="price-lookup-form" onsubmit="handlePriceLookup(event)" novalidate>
+            <!-- Crop Dropdown -->
+            <div class="form-group">
+              <label for="select-commodity" class="form-label" data-i18n="label_crop">
+                Crop / Commodity <span class="required">*</span>
+              </label>
+              <div class="select-wrapper">
+                <select id="select-commodity" class="form-select" required onchange="onCommodityChange()">
+                  <option value="" disabled selected data-i18n="placeholder_select_crop">-- Choose Crop --</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- State & District Row -->
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="select-state" class="form-label" data-i18n="label_state">
+                  State <span class="required">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select id="select-state" class="form-select" required onchange="onStateChange()">
+                    <option value="" disabled selected data-i18n="placeholder_select_state">-- Choose State --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group col-half">
+                <label for="select-district" class="form-label" data-i18n="label_district">
+                  District <span class="required">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select id="select-district" class="form-select" required>
+                    <option value="" disabled selected data-i18n="placeholder_select_district">-- Choose District --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-secondary btn-large" id="btn-view-price">
+                <span class="btn-icon">🔍</span>
+                <span data-i18n="btn_view_price">View Reported Price</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Loading State -->
+        <div id="price-loading-state" class="state-container hidden" role="status" aria-live="polite">
+          <div class="spinner"></div>
+          <p class="state-text" data-i18n="loading_price">Fetching recent reported market data...</p>
+        </div>
+
+        <!-- Error / Empty State -->
+        <div id="price-error-state" class="state-container hidden" role="alert">
+          <div class="state-icon">⚠️</div>
+          <h4 class="state-title" id="price-error-title" data-i18n="state_no_data">No data is currently available for this selection.</h4>
+          <p class="state-desc" id="price-error-desc">Please verify your selection or choose another nearby district.</p>
+        </div>
+
+        <!-- Price Reference Result Section (Section 6) -->
+        <div id="price-result-section" class="card result-card hidden" aria-live="polite">
+          <div class="result-header">
+            <div class="result-title-group">
+              <span class="result-crop-icon" id="res-crop-icon">🍅</span>
+              <div>
+                <h3 class="result-crop-name" id="res-crop-name">Tomato</h3>
+                <p class="result-location" id="res-location">Nashik, Maharashtra</p>
+              </div>
+            </div>
+            <span class="badge" id="res-data-badge">REPORTED</span>
+          </div>
+
+          <!-- Location Note (e.g. Nearby District fallback alert) -->
+          <div id="res-location-note-box" class="note-box note-warning hidden">
+            <span class="note-icon">ℹ️</span>
+            <p id="res-location-note-text" class="note-text"></p>
+          </div>
+
+          <!-- Price Display Grid -->
+          <div class="price-showcase">
+            <div class="price-main-box">
+              <span class="price-meta-label" data-i18n="label_recent_range">Recent Reported Market Range</span>
+              <div class="price-range-value" id="res-price-range">₹22–₹26/kg</div>
+              <span class="badge badge-subtle badge-reported" data-i18n="badge_reported_tag">[Reported]</span>
+            </div>
+
+            <div class="price-detail-row">
+              <div class="price-stat">
+                <span class="stat-label" data-i18n="stat_min">Minimum Price</span>
+                <span class="stat-value" id="res-min-price">₹22/kg</span>
+              </div>
+              <div class="price-stat stat-highlight">
+                <span class="stat-label" data-i18n="stat_modal">Typical Reported Price</span>
+                <span class="stat-value" id="res-modal-price">₹24/kg</span>
+              </div>
+              <div class="price-stat">
+                <span class="stat-label" data-i18n="stat_max">Maximum Price</span>
+                <span class="stat-value" id="res-max-price">₹26/kg</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metadata List -->
+          <div class="metadata-grid">
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_market">Market / Mandi:</span>
+              <strong id="res-market-name">Pimpalgaon Mandi</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_date">Reported on:</span>
+              <strong id="res-arrival-date">13/09/2026</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_source">Source:</span>
+              <strong id="res-source-name">Agmarknet</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_status">Data Status:</span>
+              <strong id="res-status-text">Reported Data</strong>
+            </div>
+          </div>
+
+          <!-- P1: Nearby Markets Comparison List -->
+          <div id="res-nearby-markets-box" class="nearby-section hidden">
+            <h4 class="nearby-title" data-i18n="title_nearby_markets">
+              <span>📍 Nearby Mandis in Region</span>
+              <span class="badge badge-subtle" id="res-nearby-badge">[Reported]</span>
+            </h4>
+            <div class="nearby-list" id="res-nearby-list"></div>
+          </div>
+
+          <!-- Mandatory Legal Disclaimer (Section 3) -->
+          <div class="disclaimer-box" role="note">
+            <span class="disclaimer-icon">⚠️</span>
+            <p class="disclaimer-text" data-i18n="disclaimer_text">
+              This is an indicative reference based on reported market data, not a guaranteed or authoritative selling price.
+            </p>
+          </div>
+
+          <!-- Killer Feature Primary CTA -->
+          <div class="cta-banner">
+            <div class="cta-content">
+              <h4 class="cta-title" data-i18n="cta_offer_title">Have a Buyer Offer?</h4>
+              <p class="cta-desc" data-i18n="cta_offer_desc">Compare your buyer's offered price against this reported range in seconds.</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-large cta-btn" onclick="proceedToCheckOfferFromPrice()">
+              <span class="btn-icon">⚖️</span>
+              <span data-i18n="btn_check_offer_cta">Check My Offer</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <!-- ============================================== -->
+    <!-- VIEW 2: CHECK MY OFFER (THE KILLER FEATURE)    -->
+    <!-- ============================================== -->
+    <section id="view-check-offer" class="page-view" aria-labelledby="check-offer-heading">
+      <div class="container narrow-container">
+
+        <!-- Killer Feature Hero Card -->
+        <div class="hero-card offer-hero">
+          <span class="hero-chip hero-chip-primary" data-i18n="chip_killer_feature">Primary Decision Tool</span>
+          <h2 id="check-offer-heading" class="hero-headline" data-i18n="offer_hero_title">
+            Check My Offer
+          </h2>
+          <p class="hero-subtext" data-i18n="offer_hero_subtitle">
+            Enter a buyer's offer to see if it is Above, Within, or Below the recent reported market range. Neutral and unbiased.
+          </p>
+        </div>
+
+        <!-- Selected Reference Summary Pill -->
+        <div class="reference-summary-bar card" id="offer-ref-summary-box">
+          <div class="ref-summary-left">
+            <span class="ref-badge-tag" data-i18n="label_active_ref">Active Benchmark:</span>
+            <strong id="offer-ref-crop-text">Tomato (Nashik, Maharashtra)</strong>
+          </div>
+          <div class="ref-summary-right">
+            <span class="ref-range-pill" id="offer-ref-range-text">₹22–₹26/kg</span>
+            <button type="button" class="btn-text-link" onclick="navigateTo('home')" data-i18n="btn_change_crop">Change Crop</button>
+          </div>
+        </div>
+
+        <!-- Buyer Offer Input Form -->
+        <div class="card form-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span class="card-step-num">2</span>
+              <span data-i18n="form_step2_title">Enter Buyer's Offer</span>
+            </h3>
+            <span class="badge badge-calculated" data-i18n="badge_calc_eval">Objective Evaluation</span>
+          </div>
+
+          <form id="check-offer-form" onsubmit="handleCheckOffer(event)" novalidate>
+            <!-- Crop Selection if not preselected -->
+            <div id="offer-selection-fallback-fields" class="hidden">
+              <div class="form-group">
+                <label for="offer-commodity" class="form-label" data-i18n="label_crop">Crop <span class="required">*</span></label>
+                <div class="select-wrapper">
+                  <select id="offer-commodity" class="form-select" onchange="onOfferCommodityChange()">
+                    <option value="" disabled selected>-- Choose Crop --</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-half">
+                  <label for="offer-state" class="form-label" data-i18n="label_state">State <span class="required">*</span></label>
+                  <div class="select-wrapper">
+                    <select id="offer-state" class="form-select" onchange="onOfferStateChange()">
+                      <option value="" disabled selected>-- Choose State --</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group col-half">
+                  <label for="offer-district" class="form-label" data-i18n="label_district">District <span class="required">*</span></label>
+                  <div class="select-wrapper">
+                    <select id="offer-district" class="form-select">
+                      <option value="" disabled selected>-- Choose District --</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price & Unit Input -->
+            <div class="form-row">
+              <div class="form-group col-two-thirds">
+                <label for="input-offered-price" class="form-label" data-i18n="label_buyer_price">
+                  Buyer's Offered Price <span class="required">*</span>
+                </label>
+                <div class="input-with-prefix">
+                  <span class="input-prefix" aria-hidden="true">₹</span>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0.1"
+                    id="input-offered-price"
+                    class="form-input"
+                    placeholder="e.g. 24"
+                    inputmode="decimal"
+                    required
+                    aria-describedby="price-input-hint"
+                  >
+                </div>
+                <span class="form-hint" id="price-input-hint" data-i18n="hint_buyer_price">Enter the price per kg or quintal offered by the buyer</span>
+                <span class="inline-error hidden" id="offered-price-error"></span>
+              </div>
+
+              <div class="form-group col-one-third">
+                <label for="select-offer-unit" class="form-label" data-i18n="label_unit">Unit</label>
+                <div class="select-wrapper">
+                  <select id="select-offer-unit" class="form-select" onchange="onOfferUnitChange()">
+                    <option value="kg" selected>₹ / kg</option>
+                    <option value="quintal">₹ / Quintal</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Optional Quantity Input -->
+            <div class="form-group">
+              <label for="input-quantity" class="form-label">
+                <span data-i18n="label_quantity">Estimated Quantity</span>
+                <span class="optional-tag" data-i18n="optional_tag">(Optional)</span>
+              </label>
+              <div class="input-with-suffix">
+                <input
+                  type="number"
+                  step="1"
+                  min="1"
+                  id="input-quantity"
+                  class="form-input"
+                  placeholder="e.g. 500"
+                  inputmode="numeric"
+                  aria-describedby="quantity-input-hint"
+                >
+                <span class="input-suffix" id="quantity-unit-label">kg</span>
+              </div>
+              <span class="form-hint" id="quantity-input-hint" data-i18n="hint_quantity">Provides calculated total offer value comparison</span>
+              <span class="inline-error hidden" id="quantity-error"></span>
+            </div>
+
+            <!-- Form Submit CTA -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-large btn-block" id="btn-submit-offer">
+                <span class="btn-icon">⚡</span>
+                <strong data-i18n="btn_evaluate_offer">Check Offer</strong>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Evaluation Loading State -->
+        <div id="offer-loading-state" class="state-container hidden" role="status" aria-live="polite">
+          <div class="spinner"></div>
+          <p class="state-text" data-i18n="loading_evaluating">Evaluating offer against reported range...</p>
+        </div>
+
+        <!-- Offer Evaluation Result Card -->
+        <div id="offer-result-card" class="card result-card hidden" aria-live="assertive">
+          
+          <!-- Large Comparison Outcome Banner -->
+          <div class="comparison-banner" id="comparison-banner">
+            <div class="comparison-icon" id="comparison-icon">⚖️</div>
+            <div class="comparison-text-group">
+              <div class="comparison-status-label" id="comparison-status-label">Within reported range</div>
+              <p class="comparison-neutral-note" id="comparison-neutral-note"></p>
+            </div>
+            <span class="badge badge-calculated" data-i18n="badge_calculated_tag">[Calculated]</span>
+          </div>
+
+          <!-- Visual Comparison Range Gauge -->
+          <div class="range-gauge-card">
+            <div class="range-gauge-header">
+              <span class="gauge-title" data-i18n="label_gauge_title">Offer Position vs Reported Range</span>
+              <span class="gauge-range-label" id="gauge-range-text">₹22 – ₹26/kg</span>
+            </div>
+
+            <div class="range-visual-track" aria-hidden="true">
+              <div class="track-segment segment-below">Below</div>
+              <div class="track-segment segment-within">Reported Market Range</div>
+              <div class="track-segment segment-above">Above</div>
+              <!-- Interactive Marker Pin -->
+              <div class="offer-pin" id="offer-pin" style="left: 50%;">
+                <div class="pin-bubble" id="pin-bubble">₹24/kg</div>
+                <div class="pin-line"></div>
+              </div>
+            </div>
+
+            <div class="range-ticks">
+              <span class="tick-label" id="tick-min">Min: ₹22</span>
+              <span class="tick-label tick-modal" id="tick-modal">Typical: ₹24</span>
+              <span class="tick-label" id="tick-max">Max: ₹26</span>
+            </div>
+          </div>
+
+          <!-- Total Calculation Details if Quantity Entered -->
+          <div id="offer-total-calc-box" class="totals-card hidden">
+            <div class="totals-header">
+              <span class="totals-title" data-i18n="title_total_value">Estimated Total Value Comparison</span>
+              <span class="badge badge-calculated" data-i18n="badge_calculated_tag">[Calculated]</span>
+            </div>
+            <div class="totals-grid">
+              <div class="total-col">
+                <span class="total-label" data-i18n="label_buyer_total">Buyer Offer Total</span>
+                <div class="total-value total-highlight" id="val-offered-total">₹12,000</div>
+              </div>
+              <div class="total-col">
+                <span class="total-label" data-i18n="label_modal_total">Typical Reported Total</span>
+                <div class="total-value" id="val-modal-total">₹12,000</div>
+              </div>
+              <div class="total-col">
+                <span class="total-label" data-i18n="label_range_total">Reported Range Total</span>
+                <div class="total-value" id="val-range-total">₹11,000 – ₹13,000</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Source & Metadata Details -->
+          <div class="metadata-grid">
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_market">Reported Market:</span>
+              <strong id="eval-market-name">Pimpalgaon Mandi</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_date">Reported Date:</span>
+              <strong id="eval-arrival-date">13/09/2026</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_source">Source:</span>
+              <strong id="eval-source-name">Agmarknet</strong>
+            </div>
+            <div class="meta-item">
+              <span class="meta-title" data-i18n="meta_status">Data Classification:</span>
+              <strong id="eval-status-name">Reported Mandi Data</strong>
+            </div>
+          </div>
+
+          <!-- Mandatory Legal Disclaimer (Section 3) -->
+          <div class="disclaimer-box" role="note">
+            <span class="disclaimer-icon">⚠️</span>
+            <p class="disclaimer-text" data-i18n="disclaimer_text">
+              This is an indicative reference based on reported market data, not a guaranteed or authoritative selling price.
+            </p>
+          </div>
+
+          <!-- Next Steps Link Cards -->
+          <div class="offer-next-steps">
+            <button type="button" class="btn btn-secondary btn-large" onclick="navigateTo('schemes')">
+              <span class="btn-icon">🏛️</span>
+              <span data-i18n="btn_browse_schemes_cta">Browse Government Schemes</span>
+            </button>
+            <button type="button" class="btn btn-outline" onclick="resetOfferForm()">
+              <span class="btn-icon">🔄</span>
+              <span data-i18n="btn_evaluate_another">Check Another Offer</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+    <!-- ============================================== -->
+    <!-- VIEW 3: GOVERNMENT SCHEMES DIRECTORY           -->
+    <!-- ============================================== -->
+    <section id="view-schemes" class="page-view" aria-labelledby="schemes-heading">
+      <div class="container">
+        
+        <div class="hero-card schemes-hero">
+          <span class="hero-chip" data-i18n="chip_schemes_awareness">Awareness &amp; Discovery Tool</span>
+          <h2 id="schemes-heading" class="hero-headline" data-i18n="schemes_hero_title">
+            Government Agricultural Schemes
+          </h2>
+          <p class="hero-subtext" data-i18n="schemes_hero_subtitle">
+            Explore central and state schemes potentially relevant to your farming operations. Verified official government portals.
+          </p>
+        </div>
+
+        <div class="schemes-filter-card card">
+          <div class="filter-search-box">
+            <span class="search-icon" aria-hidden="true">🔍</span>
+            <input
+              type="search"
+              id="schemes-search-input"
+              class="search-input"
+              placeholder="Search schemes by name or keywords (e.g. Kisan, Insurance, Drip)..."
+              oninput="handleSchemeSearch(event)"
+              aria-label="Search government schemes"
+            >
+          </div>
+
+          <div class="category-pills-bar" id="schemes-category-bar" role="tablist" aria-label="Scheme categories">
+            <button type="button" class="cat-pill active" data-cat="all" onclick="filterSchemesByCategory('all')">All Schemes</button>
+          </div>
+        </div>
+
+        <div class="disclaimer-box" role="note">
+          <span class="disclaimer-icon">ℹ️</span>
+          <p class="disclaimer-text" data-i18n="schemes_disclaimer_text">
+            All schemes listed here are presented as <strong>POTENTIALLY RELEVANT</strong> for discovery and awareness. This platform does not determine official eligibility or guarantee financial benefits. Please apply directly through official portals.
+          </p>
+        </div>
+
+        <div class="schemes-grid" id="schemes-container"></div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 4: ABOUT / HOW THIS WORKS                 -->
+    <!-- ============================================== -->
+    <section id="view-about" class="page-view" aria-labelledby="about-heading">
+      <div class="container narrow-container">
+        
+        <div class="hero-card">
+          <span class="hero-chip" data-i18n="chip_transparency">Data Transparency &amp; Standards</span>
+          <h2 id="about-heading" class="hero-headline" data-i18n="about_hero_title">
+            How KisanMandi Works
+          </h2>
+          <p class="hero-subtext" data-i18n="about_hero_subtitle">
+            An open, transparent guide to where our data comes from, what our labels mean, and our system boundaries.
+          </p>
+        </div>
+
+        <div class="card about-section-card">
+          <h3 class="about-card-title">1. What This Platform Is and Is Not</h3>
+          <div class="about-grid-two">
+            <div class="about-col col-positive">
+              <h4>✅ What KisanMandi Is:</h4>
+              <ul>
+                <li>An <strong>information-access tool</strong> for Indian farmers.</li>
+                <li>A neutral reference to compare buyer offers against recent reported market prices.</li>
+                <li>A curated directory of potentially relevant government schemes.</li>
+                <li>A mobile-first tool designed for speed and clarity in rural connectivity.</li>
+              </ul>
+            </div>
+            <div class="about-col col-negative">
+              <h4>❌ What KisanMandi Is NOT:</h4>
+              <ul>
+                <li>NOT a marketplace or trading platform.</li>
+                <li>NOT a buying, selling, or payment system.</li>
+                <li>NOT a fraud detector or buyer accusation system.</li>
+                <li>NOT a guaranteed or authoritative price system.</li>
+                <li>NOT an official eligibility determination service.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card about-section-card">
+          <h3 class="about-card-title">2. Understanding Our Data Classifications</h3>
+          <div class="labels-explainer">
+            <div class="label-explain-item">
+              <span class="badge badge-reported">[REPORTED]</span>
+              <p>Data directly pulled from official wholesale mandi records via the government Agmarknet / data.gov.in portal. Represents actual arrivals and transactions recorded by market committees.</p>
+            </div>
+            <div class="label-explain-item">
+              <span class="badge badge-fallback">[FALLBACK / PRE-TESTED DEMO DATA]</span>
+              <p>Pre-tested benchmark records used when live government APIs are unreachable or offline during network disruptions. Clearly marked so users are never misled.</p>
+            </div>
+            <div class="label-explain-item">
+              <span class="badge badge-calculated">[CALCULATED]</span>
+              <p>Any arithmetic computed by this application, such as unit conversions (quintal to kg), offer position checks (Above / Within / Below), or quantity totals. Never disguised as reported raw data.</p>
+            </div>
+            <div class="label-explain-item">
+              <span class="badge badge-potentially-relevant">[POTENTIALLY RELEVANT]</span>
+              <p>Applied to every government scheme. We never say "You are eligible" because only government authorities can verify land titles and eligibility conditions.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card about-section-card">
+          <h3 class="about-card-title">3. Why We Never Say "Fair Price" or "Correct Price"</h3>
+          <p class="about-p">
+            Agricultural pricing in real-world mandis is subject to multiple factors beyond geographical averages, including:
+          </p>
+          <ul class="about-bullets">
+            <li><strong>Crop Variety &amp; Grade:</strong> High-grade export quality commands different prices than local grade.</li>
+            <li><strong>Moisture &amp; Freshness:</strong> Storage conditions, sorting, and freshness directly influence offer prices.</li>
+            <li><strong>Transportation &amp; Packaging:</strong> Distance to market, crate packaging, and loading costs impact net realizations.</li>
+            <li><strong>Intraday Volatility:</strong> Mandi prices fluctuate daily or hourly depending on arrival truck volumes.</li>
+          </ul>
+          <p class="about-p">
+            Therefore, this platform remains strictly neutral. We provide the <em>recent reported market range</em> so that farmers enter negotiations informed, without asserting an absolute single "correct" price.
+          </p>
+        </div>
+
+        <div class="disclaimer-box" role="note">
+          <span class="disclaimer-icon">⚠️</span>
+          <p class="disclaimer-text">
+            <strong>Indicative Reference Disclaimer:</strong> All market price information displayed on this platform is for general informational and reference purposes only. It does not constitute a legal, guaranteed, or binding commercial quote.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
+    <button type="button" class="mobile-nav-btn active" data-page="home" onclick="navigateTo('home')">
+      <span class="m-icon">📊</span>
+      <span class="m-label" data-i18n="nav_price_ref">Price Ref</span>
+    </button>
+    <button type="button" class="mobile-nav-btn mobile-nav-highlight" data-page="check-offer" onclick="navigateTo('check-offer')">
+      <span class="m-icon">⚖️</span>
+      <span class="m-label" data-i18n="nav_check_offer">Check Offer</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-page="schemes" onclick="navigateTo('schemes')">
+      <span class="m-icon">🏛️</span>
+      <span class="m-label" data-i18n="nav_schemes">Schemes</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-page="about" onclick="navigateTo('about')">
+      <span class="m-icon">ℹ️</span>
+      <span class="m-label" data-i18n="nav_about">How It Works</span>
+    </button>
+  </nav>
+
+  <!-- Global Toast Alert -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
