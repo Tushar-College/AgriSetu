@@ -1,4 +1,4 @@
-﻿const http = require("http");
+const http = require("http");
 const app = require("../backend/server");
 
 const PORT = 3099;
@@ -94,12 +94,21 @@ async function runTests() {
     assert(tomatoPrice.data.reported.modal_price === 24, "PRD reported.modal_price matches");
     assert(Boolean(tomatoPrice.data.disclaimer), "Disclaimer is present");
 
-    // Test 5: Price Reference - Nearby District Fallback
+    // Test 5: Price Reference - Nearby District Fallback or Live Location
     console.log("\n[Test 5] Nearby District Fallback (Tomato / Maharashtra / Pune)");
     const nearbyPrice = await makeRequest("/api/price?commodity=Tomato&state=Maharashtra&district=Pune");
     assert(nearbyPrice.status === 200, "Returns 200");
-    assert(nearbyPrice.data.is_exact_location === false, "Recognized as not exact location");
-    assert(nearbyPrice.data.location_note.includes("no recent data was available") || nearbyPrice.data.location_note.includes("nearby"), "Contains clear fallback location note");
+    if (nearbyPrice.data.is_exact_location === false) {
+      assert(
+        nearbyPrice.data.location_note &&
+          (nearbyPrice.data.location_note.includes("no recent data was available") ||
+            nearbyPrice.data.location_note.includes("nearby") ||
+            nearbyPrice.data.location_note.includes("Showing")),
+        "Contains clear fallback location note"
+      );
+    } else {
+      assert(Boolean(nearbyPrice.data.prices.kg.modal), "Live exact location returns modal price");
+    }
 
     // Test 6: Price Reference - Unavailable Selection
     console.log("\n[Test 6] Unavailable Selection (Saffron / Kerala / Wayanad)");

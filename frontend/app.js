@@ -1,5 +1,5 @@
 /**
- * KisanMandi Frontend Application
+ * AgriSetu Frontend Application
  * Mobile-First Farmer Market Price Reference & Offer Evaluation Platform
  */
 
@@ -14,150 +14,18 @@ const state = {
   activePriceRef: null,
   activeEvaluation: null,
   selectedCategory: "all",
-  searchQuery: ""
+  searchQuery: "",
+  activeWeather: null,
+  cropImage: null,
+  cropDoctorResult: null
 };
 
-// Bilingual Localization Dictionary (English & Hindi)
-const I18N = {
-  en: {
-    app_title: "KisanMandi",
-    app_tagline: "Market Price Reference & Offer Evaluation",
-    nav_price_ref: "Price Reference",
-    nav_check_offer: "Check My Offer",
-    nav_schemes: "Govt Schemes",
-    nav_about: "How It Works",
-    demo_quick_label: "Quick Demo:",
-    hero_chip: "Information Access Tool",
-    hero_title: "Know the reported market range before you negotiate.",
-    hero_subtitle: "Access recent mandi price benchmarks sourced from Agmarknet. Neutral, transparent data with no price guarantees.",
-    form_step1_title: "Select Crop & Location",
-    badge_mandi_data: "Mandi Reference",
-    label_crop: "Crop / Commodity",
-    placeholder_select_crop: "-- Choose Crop --",
-    label_state: "State",
-    placeholder_select_state: "-- Choose State --",
-    label_district: "District",
-    placeholder_select_district: "-- Choose District --",
-    btn_view_price: "View Reported Price",
-    loading_price: "Fetching recent reported market data...",
-    state_no_data: "No data is currently available for this selection.",
-    state_no_data_desc: "Please verify your selection or choose another nearby district.",
-    label_recent_range: "Recent Reported Market Range",
-    badge_reported_tag: "[Reported]",
-    badge_fallback_tag: "[Fallback / Demo]",
-    badge_calculated_tag: "[Calculated]",
-    stat_min: "Minimum Price",
-    stat_modal: "Typical Reported Price",
-    stat_max: "Maximum Price",
-    meta_market: "Market / Mandi:",
-    meta_date: "Reported on:",
-    meta_source: "Source:",
-    meta_status: "Data Status:",
-    title_nearby_markets: "📍 Nearby Mandis in Region",
-    disclaimer_text: "This is an indicative reference based on reported market data, not a guaranteed or authoritative selling price.",
-    cta_offer_title: "Have a Buyer Offer?",
-    cta_offer_desc: "Compare your buyer's offered price against this reported range in seconds.",
-    btn_check_offer_cta: "Check My Offer",
-    chip_killer_feature: "Primary Decision Tool",
-    offer_hero_title: "Check My Offer",
-    offer_hero_subtitle: "Enter a buyer's offer to see if it is Above, Within, or Below the recent reported market range. Neutral and unbiased.",
-    label_active_ref: "Active Benchmark:",
-    btn_change_crop: "Change Crop",
-    form_step2_title: "Enter Buyer's Offer",
-    badge_calc_eval: "Objective Evaluation",
-    label_buyer_price: "Buyer's Offered Price",
-    hint_buyer_price: "Enter the price offered by your buyer",
-    label_unit: "Unit",
-    label_quantity: "Estimated Quantity",
-    optional_tag: "(Optional)",
-    hint_quantity: "Provides calculated total offer value comparison",
-    btn_evaluate_offer: "Check Offer",
-    loading_evaluating: "Evaluating offer against reported range...",
-    label_gauge_title: "Offer Position vs Reported Range",
-    title_total_value: "Estimated Total Value Comparison",
-    label_buyer_total: "Buyer Offer Total",
-    label_modal_total: "Typical Reported Total",
-    label_range_total: "Reported Range Total",
-    btn_browse_schemes_cta: "Browse Government Schemes",
-    btn_evaluate_another: "Check Another Offer",
-    chip_schemes_awareness: "Awareness & Discovery Tool",
-    schemes_hero_title: "Government Agricultural Schemes",
-    schemes_hero_subtitle: "Explore central and state schemes potentially relevant to your farming operations. Verified official government portals.",
-    schemes_disclaimer_text: "All schemes listed here are presented as POTENTIALLY RELEVANT for discovery and awareness. This platform does not determine official eligibility or guarantee financial benefits. Please apply directly through official portals.",
-    chip_transparency: "Data Transparency & Standards",
-    about_hero_title: "How KisanMandi Works",
-    about_hero_subtitle: "An open, transparent guide to where our data comes from, what our labels mean, and our system boundaries."
-  },
-  hi: {
-    app_title: "किसान मंडी",
-    app_tagline: "बाजार मूल्य संदर्भ एवं प्रस्ताव मूल्यांकन",
-    nav_price_ref: "मूल्य संदर्भ",
-    nav_check_offer: "प्रस्ताव जांचें",
-    nav_schemes: "सरकारी योजनाएं",
-    nav_about: "कार्यप्रणाली",
-    demo_quick_label: "डेमो चुनें:",
-    hero_chip: "सूचना पहुंच उपकरण",
-    hero_title: "सौदा तय करने से पहले दर्ज बाजार मूल्य सीमा जानें।",
-    hero_subtitle: "एगमार्कनेट से प्राप्त हालिया मंडी मूल्य संदर्भ। तटस्थ, पारदर्शी आंकड़े — कोई मूल्य गारंटी नहीं।",
-    form_step1_title: "फसल और स्थान चुनें",
-    badge_mandi_data: "मंडी संदर्भ",
-    label_crop: "फसल / जींस",
-    placeholder_select_crop: "-- फसल चुनें --",
-    label_state: "राज्य",
-    placeholder_select_state: "-- राज्य चुनें --",
-    label_district: "ज़िला",
-    placeholder_select_district: "-- ज़िला चुनें --",
-    btn_view_price: "दर्ज मूल्य देखें",
-    loading_price: "हालिया मंडी मूल्य डेटा लोड हो रहा है...",
-    state_no_data: "इस चयन के लिए वर्तमान में कोई डेटा उपलब्ध नहीं है।",
-    state_no_data_desc: "कृपया अपना चयन जांचें या पास का कोई अन्य जिला चुनें।",
-    label_recent_range: "हालिया दर्ज बाजार मूल्य सीमा",
-    badge_reported_tag: "[दर्ज]",
-    badge_fallback_tag: "[डेमो डेटा]",
-    badge_calculated_tag: "[गणना आधारित]",
-    stat_min: "न्यूनतम मूल्य",
-    stat_modal: "सामान्य दर्ज मूल्य",
-    stat_max: "अधिकतम मूल्य",
-    meta_market: "मंडी / बाजार:",
-    meta_date: "दर्ज दिनांक:",
-    meta_source: "स्रोत:",
-    meta_status: "डेटा स्थिति:",
-    title_nearby_markets: "📍 क्षेत्र की अन्य मंडियां",
-    disclaimer_text: "यह दर्ज बाजार आंकड़ों पर आधारित एक सांकेतिक संदर्भ है, कोई गारंटीशुदा या आधिकारिक बिक्री मूल्य नहीं।",
-    cta_offer_title: "क्या खरीदार ने प्रस्ताव दिया है?",
-    cta_offer_desc: "अपने खरीदार के प्रस्तावित मूल्य की तुलना सेकंडों में दर्ज बाजार सीमा से करें।",
-    btn_check_offer_cta: "प्रस्ताव जांचें",
-    chip_killer_feature: "मुख्य निर्णय उपकरण",
-    offer_hero_title: "खरीदार का प्रस्ताव जांचें",
-    offer_hero_subtitle: "खरीदार का प्रस्ताव दर्ज करें और देखें कि यह दर्ज बाजार सीमा से ऊपर, भीतर या नीचे है। पूर्णतः निष्पक्ष।",
-    label_active_ref: "सक्रिय संदर्भ:",
-    btn_change_crop: "फसल बदलें",
-    form_step2_title: "खरीदार का प्रस्तावित मूल्य भरें",
-    badge_calc_eval: "तटस्थ मूल्यांकन",
-    label_buyer_price: "खरीदार का प्रस्तावित मूल्य",
-    hint_buyer_price: "खरीदार द्वारा दिया गया प्रति किलो या क्विंटल मूल्य दर्ज करें",
-    label_unit: "इकाई",
-    label_quantity: "अनुमानित मात्रा",
-    optional_tag: "(वैकल्पिक)",
-    hint_quantity: "कुल अनुमानित बिक्री मूल्य तुलना प्रदान करता है",
-    btn_evaluate_offer: "प्रस्ताव जांचें",
-    loading_evaluating: "प्रस्ताव का मूल्यांकन हो रहा है...",
-    label_gauge_title: "दर्ज सीमा के सापेक्ष प्रस्ताव की स्थिति",
-    title_total_value: "अनुमानित कुल मूल्य तुलना",
-    label_buyer_total: "खरीदार का कुल मूल्य",
-    label_modal_total: "सामान्य दर्ज कुल",
-    label_range_total: "दर्ज सीमा अनुसार कुल",
-    btn_browse_schemes_cta: "सरकारी योजनाएं देखें",
-    btn_evaluate_another: "अन्य प्रस्ताव जांचें",
-    chip_schemes_awareness: "जागरूकता एवं खोज उपकरण",
-    schemes_hero_title: "सरकारी कृषि कल्याण योजनाएं",
-    schemes_hero_subtitle: "अपनी खेती के लिए संभावित रूप से उपयोगी केंद्र और राज्य सरकार की योजनाओं की जानकारी प्राप्त करें।",
-    schemes_disclaimer_text: "यहां सूचीबद्ध सभी योजनाएं केवल जानकारी और जागरूकता हेतु 'संभावित रूप से प्रासंगिक' के रूप में दिखाई गई हैं। यह मंच आधिकारिक पात्रता निर्धारित नहीं करता।",
-    chip_transparency: "डेटा पारदर्शिता एवं मानक",
-    about_hero_title: "किसान मंडी कैसे काम करता है",
-    about_hero_subtitle: "हमारे डेटा स्रोत, लेबल के अर्थ और सीमाओं की स्पष्ट जानकारी।"
-  }
-};
+// Centralized i18n Dictionary Access
+const getI18n = () => (window.I18N && window.I18N[state.lang]) || (window.I18N && window.I18N.en) || {};
+const I18N = new Proxy({}, {
+  get: (_, prop) => (window.I18N && window.I18N[prop]) || (window.I18N && window.I18N.en) || {}
+});
+
 // Document Ready Initialization
 document.addEventListener("DOMContentLoaded", async () => {
   setupLanguage();
@@ -197,6 +65,9 @@ function navigateTo(pageId) {
   if (pageId === "check-offer") {
     syncOfferReferenceBar();
   }
+  if (pageId === "weather") {
+    syncWeatherInputsFromPriceRef();
+  }
 
   // Scroll to top
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -207,9 +78,14 @@ function setLanguage(lang) {
   state.lang = lang;
   localStorage.setItem("km_lang", lang);
 
-  document.getElementById("btn-lang-en").classList.toggle("active", lang === "en");
-  document.getElementById("btn-lang-hi").classList.toggle("active", lang === "hi");
+ const languageSelect = document.getElementById("select-language");
+if (languageSelect) {
+    languageSelect.value = lang;
+}
 
+document.documentElement.lang = lang;
+document.documentElement.dir = lang === "ur" ? "rtl" : "ltr";
+document.body.classList.toggle("lang-ur", lang === "ur");
   applyTranslations();
   renderSchemes();
   renderDemoPills();
@@ -220,18 +96,27 @@ function setLanguage(lang) {
   if (state.activeEvaluation) {
     renderOfferResult(state.activeEvaluation);
   }
+  if (state.activeWeather) {
+    renderWeather(state.activeWeather);
+  }
+  if (state.cropDoctorResult) {
+    renderCropDiagnosis(state.cropDoctorResult);
+  }
 }
 
 function setupLanguage() {
-  const saved = localStorage.getItem("km_lang");
-  if (saved && (saved === "en" || saved === "hi")) {
-    state.lang = saved;
-  }
-  setLanguage(state.lang);
+    const saved = localStorage.getItem("km_lang");
+    const supportedLanguages = ["en", "hi", "ta", "te", "kn", "mr", "gu", "pa", "ur"];
+
+    if (saved && supportedLanguages.includes(saved)) {
+        state.lang = saved;
+    }
+
+    setLanguage(state.lang);
 }
 
 function applyTranslations() {
-  const dict = I18N[state.lang] || I18N.en;
+  const dict = (window.I18N && window.I18N[state.lang]) || (window.I18N && window.I18N.en) || {};
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.dataset.i18n;
     if (dict[key]) {
@@ -241,8 +126,8 @@ function applyTranslations() {
 
   // Document Title
   document.title = state.lang === "hi"
-    ? "किसान मंडी — बाजार मूल्य संदर्भ एवं प्रस्ताव मूल्यांकन"
-    : "KisanMandi — Farmer Market Price Reference & Offer Evaluation Platform";
+    ? "एग्रीसेतु — बाजार मूल्य संदर्भ एवं प्रस्ताव मूल्यांकन"
+    : "AgriSetu — Farmer Market Price Reference & Offer Evaluation Platform";
 }
 
 // Load Platform Metadata from Backend
@@ -295,7 +180,8 @@ function populateCommodityDropdowns() {
 function populateStateDropdowns() {
   const selects = [
     document.getElementById("select-state"),
-    document.getElementById("offer-state")
+    document.getElementById("offer-state"),
+    document.getElementById("select-weather-state")
   ];
 
   selects.forEach((select) => {
@@ -881,4 +767,580 @@ function showToast(msg) {
   setTimeout(() => {
     toast.classList.add("hidden");
   }, 3200);
+}
+
+// ==========================================================================
+// Weather Outlook Functions
+// ==========================================================================
+
+// Weather State -> District Dropdown Cascade
+function onWeatherStateChange() {
+  const stateVal = document.getElementById("select-weather-state").value;
+  const distSelect = document.getElementById("select-weather-district");
+  if (!distSelect) return;
+
+  distSelect.innerHTML = `<option value="" disabled selected>${I18N[state.lang].placeholder_select_district}</option>`;
+
+  const stateObj = state.locations.find((l) => l.state === stateVal);
+  if (stateObj && stateObj.districts) {
+    stateObj.districts.forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      distSelect.appendChild(opt);
+    });
+  }
+}
+
+// Sync Weather Dropdowns from Active Price Reference (Convenience)
+function syncWeatherInputsFromPriceRef() {
+  if (state.activePriceRef && state.activePriceRef.data_status !== "unavailable") {
+    const weatherStateSelect = document.getElementById("select-weather-state");
+    const weatherDistSelect = document.getElementById("select-weather-district");
+    if (weatherStateSelect && !weatherStateSelect.value) {
+      weatherStateSelect.value = state.activePriceRef.state;
+      onWeatherStateChange();
+      if (weatherDistSelect) {
+        weatherDistSelect.value = state.activePriceRef.district;
+      }
+    }
+  }
+}
+
+// Handle "Use My Location" (EXPLICIT CLICK ONLY)
+async function handleUseMyLocation() {
+  const loadingEl = document.getElementById("weather-loading-state");
+  const errorEl = document.getElementById("weather-error-state");
+  const resultCard = document.getElementById("weather-result-card");
+
+  loadingEl.classList.remove("hidden");
+  errorEl.classList.add("hidden");
+  resultCard.classList.add("hidden");
+
+  if (!navigator.geolocation) {
+    loadingEl.classList.add("hidden");
+    errorEl.classList.remove("hidden");
+    document.getElementById("weather-error-title").textContent =
+      state.lang === "hi" ? "जियोलोकेशन समर्थित नहीं है" : "Geolocation not supported";
+    document.getElementById("weather-error-desc").textContent =
+      state.lang === "hi"
+        ? "आपका ब्राउज़र स्थान पहुंच का समर्थन नहीं करता है। कृपया राज्य और ज़िला मैन्युअल रूप से चुनें।"
+        : "Your browser does not support geolocation. Please select your State and District manually.";
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      console.log(`[Browser GPS Detected] Latitude: ${lat}, Longitude: ${lon}`);
+      await fetchWeather({ lat, lon });
+    },
+    (err) => {
+      console.warn("Geolocation request failed or denied:", err.message);
+      loadingEl.classList.add("hidden");
+      errorEl.classList.remove("hidden");
+      document.getElementById("weather-error-title").textContent =
+        state.lang === "hi" ? "स्थान की जानकारी उपलब्ध नहीं" : "Location access unavailable";
+      document.getElementById("weather-error-desc").textContent =
+        state.lang === "hi"
+          ? "स्थान अनुमति अस्वीकृत कर दी गई या अनुपलब्ध है। कृपया ऊपर दिए गए ड्रॉपडाउन से अपना राज्य और ज़िला मैन्युअल रूप से चुनें।"
+          : "Location permission was denied or unavailable. Please select your State and District manually using the dropdowns above.";
+    },
+    { timeout: 10000, enableHighAccuracy: true }
+  );
+}
+
+// Handle Manual Weather Lookup Form Submit
+async function handleManualWeatherLookup(event) {
+  event.preventDefault();
+  const stateVal = document.getElementById("select-weather-state").value;
+  const district = document.getElementById("select-weather-district").value;
+
+  if (!stateVal || !district) {
+    showToast(state.lang === "hi" ? "कृपया राज्य और ज़िला चुनें" : "Please select state and district");
+    return;
+  }
+
+  await fetchWeather({ state: stateVal, district });
+}
+
+// Fetch Weather Outlook from Backend
+async function fetchWeather(params) {
+  const loadingEl = document.getElementById("weather-loading-state");
+  const errorEl = document.getElementById("weather-error-state");
+  const resultCard = document.getElementById("weather-result-card");
+
+  loadingEl.classList.remove("hidden");
+  errorEl.classList.add("hidden");
+  resultCard.classList.add("hidden");
+
+  try {
+    console.log("[Frontend Weather] Requesting /api/weather with params:", params);
+    const urlParams = new URLSearchParams(params);
+    const res = await fetch(`/api/weather?${urlParams.toString()}`);
+    const data = await res.json();
+    console.log("[Frontend Weather] Received weather response:", data);
+
+    loadingEl.classList.add("hidden");
+
+    if (!res.ok || data.error) {
+      errorEl.classList.remove("hidden");
+      document.getElementById("weather-error-title").textContent =
+        state.lang === "hi" ? "मौसम डेटा लोड नहीं हो सका" : "Unable to load weather data";
+      document.getElementById("weather-error-desc").textContent =
+        data.error || (state.lang === "hi" ? "कृपया पुनः प्रयास करें या अन्य ज़िला चुनें।" : "Please try again or select your district manually.");
+      return;
+    }
+
+    state.activeWeather = data;
+    renderWeather(data);
+    resultCard.classList.remove("hidden");
+    resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (err) {
+    console.error("Weather fetch error:", err);
+    loadingEl.classList.add("hidden");
+    errorEl.classList.remove("hidden");
+    document.getElementById("weather-error-title").textContent =
+      state.lang === "hi" ? "नेटवर्क त्रुटि" : "Network error";
+    document.getElementById("weather-error-desc").textContent =
+      state.lang === "hi"
+        ? "सर्वर से कनेक्ट करने में विफल। कृपया अपना इंटरनेट कनेक्शन जांचें।"
+        : "Failed to connect to the server. Please check your connection.";
+  }
+}
+
+// Render Weather Outlook Card
+function renderWeather(data) {
+  console.log("[Frontend Weather] Rendering detected location:", data.location);
+
+  // 1. Possibility Status Banner (Calculated)
+  const banner = document.getElementById("weather-possibility-banner");
+  banner.className = `weather-possibility-banner ${data.possibility.badge_class || ""}`;
+
+  document.getElementById("weather-possibility-icon").textContent = data.possibility.icon || "🌤️";
+  document.getElementById("weather-possibility-label").textContent =
+    state.lang === "hi" && data.possibility.label_hindi
+      ? data.possibility.label_hindi
+      : data.possibility.label;
+
+  document.getElementById("weather-possibility-desc").textContent =
+    state.lang === "hi" && data.possibility.description_hindi
+      ? data.possibility.description_hindi
+      : data.possibility.description;
+
+  // 2. Current Weather Showcase (Reported)
+  const locText = (state.lang === "hi" && data.location.district_hindi && data.location.state_hindi)
+    ? `${data.location.district_hindi}, ${data.location.state_hindi}`
+    : (data.location.display || `${data.location.district || data.location.name}, ${data.location.state}`);
+  document.getElementById("weather-location-text").textContent = locText;
+
+  const statusBadge = document.getElementById("weather-status-badge");
+  if (data.data_status === "live") {
+    statusBadge.textContent = state.lang === "hi" ? "दर्ज आंकड़े" : "REPORTED LIVE";
+    statusBadge.className = "badge badge-reported";
+  } else {
+    statusBadge.textContent = state.lang === "hi" ? "डेमो डेटा" : "FALLBACK / DEMO";
+    statusBadge.className = "badge badge-fallback";
+  }
+
+  // Current Temperature & Condition
+  document.getElementById("weather-temp-val").textContent = `${data.current.temp_c}°C`;
+  document.getElementById("weather-condition-text").textContent = data.current.condition.text;
+  const conditionIcon = document.getElementById("weather-condition-icon");
+  if (data.current.condition.icon) {
+    conditionIcon.src = data.current.condition.icon;
+    conditionIcon.alt = data.current.condition.text;
+    conditionIcon.classList.remove("hidden");
+  } else {
+    conditionIcon.classList.add("hidden");
+  }
+
+  // Vital Farm Metrics
+  document.getElementById("weather-rain-prob").textContent = `${data.today.chance_of_rain}%`;
+  document.getElementById("weather-humidity").textContent = `${data.current.humidity}%`;
+  document.getElementById("weather-wind").textContent = `${data.current.wind_kph} km/h`;
+  document.getElementById("weather-minmax").textContent = `${data.today.min_temp_c}°C – ${data.today.max_temp_c}°C`;
+
+  // 3. 3-Day Forecast Cards Grid (Reported)
+  const forecastContainer = document.getElementById("weather-forecast-container");
+  forecastContainer.innerHTML = "";
+
+  if (data.forecast_3day && data.forecast_3day.length > 0) {
+    data.forecast_3day.forEach((day, index) => {
+      let dayTitle = day.date;
+      if (state.lang === "hi") {
+        if (index === 0) dayTitle = "दिन 1 (आज)";
+        else if (index === 1) dayTitle = "दिन 2 (कल)";
+        else dayTitle = "दिन 3";
+      }
+
+      const card = document.createElement("div");
+      card.className = "forecast-day-card";
+      card.innerHTML = `
+        <span class="forecast-day-date">${dayTitle}</span>
+        <img class="forecast-day-icon" src="${day.condition.icon}" alt="${day.condition.text}" />
+        <span class="forecast-day-cond">${day.condition.text}</span>
+        <span class="forecast-day-temp">${day.min_temp_c}°C – ${day.max_temp_c}°C</span>
+        <span class="forecast-day-rain">🌧️ ${day.chance_of_rain}% ${state.lang === "hi" ? "बारिश" : "rain"}</span>
+      `;
+      forecastContainer.appendChild(card);
+    });
+  }
+
+  // Also sync manual dropdowns to this location if matching in state.locations
+  if (data.location && data.location.state) {
+    const weatherStateSelect = document.getElementById("select-weather-state");
+    const weatherDistSelect = document.getElementById("select-weather-district");
+    if (weatherStateSelect && weatherDistSelect) {
+      const matchState = state.locations.find(
+        (l) => l.state.toLowerCase() === data.location.state.toLowerCase()
+      );
+      if (matchState) {
+        weatherStateSelect.value = matchState.state;
+        onWeatherStateChange();
+        const distName = data.location.district || data.location.name;
+        if (distName) {
+          const matchDist = matchState.districts.find(
+            (d) => d.toLowerCase() === distName.toLowerCase()
+          );
+          if (matchDist) {
+            weatherDistSelect.value = matchDist;
+          } else {
+            const opt = document.createElement("option");
+            opt.value = distName;
+            opt.textContent = distName;
+            opt.selected = true;
+            weatherDistSelect.appendChild(opt);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Sync Weather Location to Price Lookup View
+function syncWeatherToPriceLookup() {
+  if (state.activeWeather && state.activeWeather.location) {
+    const loc = state.activeWeather.location;
+    const targetState = loc.state || "";
+    const targetDistrict = loc.district || loc.name || "";
+
+    let matchedState = state.locations.find(
+      (l) => l.state.toLowerCase() === targetState.toLowerCase()
+    );
+
+    if (!matchedState) {
+      matchedState = state.locations.find((l) =>
+        l.districts.some((d) => d.toLowerCase() === targetDistrict.toLowerCase())
+      );
+    }
+
+    if (matchedState) {
+      document.getElementById("select-state").value = matchedState.state;
+      onStateChange();
+      const matchedDist = matchedState.districts.find(
+        (d) => d.toLowerCase() === targetDistrict.toLowerCase()
+      );
+      if (matchedDist) {
+        document.getElementById("select-district").value = matchedDist;
+      }
+    }
+  }
+
+  navigateTo("home");
+  showToast(
+    state.lang === "hi"
+      ? "स्थान सेट किया गया। मंडी भाव देखने के लिए फसल चुनें।"
+      : "Location set from Weather Outlook. Select a crop to view mandi prices."
+  );
+}
+
+
+// ==========================================================================
+// Crop Doctor (AI Leaf / Crop Diagnosis) Functions
+// ==========================================================================
+
+function triggerCropCamera() {
+  const cameraInput = document.getElementById("crop-camera-input");
+  if (cameraInput) {
+    cameraInput.value = "";
+    cameraInput.click();
+  }
+}
+
+function triggerCropUpload() {
+  const fileInput = document.getElementById("crop-file-input");
+  if (fileInput) {
+    fileInput.value = "";
+    fileInput.click();
+  }
+}
+
+function handleCropImageInput(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  const validTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!validTypes.includes(file.type)) {
+    const dict = (window.I18N && window.I18N[state.lang]) || {};
+    showToast(dict.error_no_image_selected || "Please upload a valid JPEG, PNG, or WebP image.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const rawDataUrl = e.target.result;
+
+    // Client-side resize and compression to ensure high mobile performance
+    // Max dimension 1600x1600, JPEG 85% quality
+    compressAndResizeImage(rawDataUrl, 1600, 1600, 0.85, (compressedDataUrl) => {
+      state.cropImage = compressedDataUrl;
+      state.cropDoctorResult = null;
+
+      // Show preview area
+      const previewArea = document.getElementById("crop-preview-area");
+      const previewImg = document.getElementById("crop-preview-img");
+      const canvas = document.getElementById("crop-bbox-canvas");
+
+      if (previewImg) {
+        previewImg.src = compressedDataUrl;
+      }
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      if (previewArea) {
+        previewArea.classList.remove("hidden");
+      }
+
+      // Hide any previous result cards or errors
+      document.getElementById("crop-doctor-result-card").classList.add("hidden");
+      document.getElementById("crop-doctor-disclaimer").classList.add("hidden");
+      document.getElementById("crop-doctor-error").classList.add("hidden");
+      document.getElementById("crop-doctor-empty").classList.add("hidden");
+      document.getElementById("crop-doctor-loading").classList.add("hidden");
+
+      // Scroll to preview
+      if (previewArea) {
+        previewArea.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function compressAndResizeImage(dataUrl, maxWidth, maxHeight, quality, callback) {
+  const img = new Image();
+  img.onload = function() {
+    let width = img.width;
+    let height = img.height;
+
+    if (width > maxWidth || height > maxHeight) {
+      const ratio = Math.min(maxWidth / width, maxHeight / height);
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, width, height);
+
+    const compressed = canvas.toDataURL("image/jpeg", quality);
+    callback(compressed);
+  };
+  img.src = dataUrl;
+}
+
+async function analyzeCrop() {
+  const dict = (window.I18N && window.I18N[state.lang]) || {};
+
+  if (!state.cropImage) {
+    showToast(dict.error_no_image_selected || "Please upload or capture a photo first.");
+    return;
+  }
+
+  const loadingEl = document.getElementById("crop-doctor-loading");
+  const errorEl = document.getElementById("crop-doctor-error");
+  const emptyEl = document.getElementById("crop-doctor-empty");
+  const resultCard = document.getElementById("crop-doctor-result-card");
+  const disclaimerEl = document.getElementById("crop-doctor-disclaimer");
+  const analyzeBtn = document.getElementById("btn-analyze-crop");
+
+  // Show loading
+  loadingEl.classList.remove("hidden");
+  errorEl.classList.add("hidden");
+  emptyEl.classList.add("hidden");
+  resultCard.classList.add("hidden");
+  disclaimerEl.classList.add("hidden");
+  if (analyzeBtn) analyzeBtn.disabled = true;
+
+  try {
+    const res = await fetch("/api/crop-doctor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: state.cropImage })
+    });
+
+    const data = await res.json();
+    loadingEl.classList.add("hidden");
+    if (analyzeBtn) analyzeBtn.disabled = false;
+
+    if (!res.ok || !data.success) {
+      errorEl.classList.remove("hidden");
+      document.getElementById("crop-error-title").textContent =
+        dict.error_diagnosis_unavailable || "Crop diagnosis temporarily unavailable";
+      document.getElementById("crop-error-desc").textContent =
+        data.error || (dict.error_diagnosis_unavailable || "Crop diagnosis is temporarily unavailable. Please try again later.");
+      errorEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    if (!data.detected || !data.predictions || data.predictions.length === 0) {
+      emptyEl.classList.remove("hidden");
+      emptyEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    // Successful diagnosis with predictions
+    state.cropDoctorResult = data;
+    renderCropDiagnosis(data);
+
+    resultCard.classList.remove("hidden");
+    disclaimerEl.classList.remove("hidden");
+    resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (err) {
+    console.error("Crop diagnosis error:", err);
+    loadingEl.classList.add("hidden");
+    if (analyzeBtn) analyzeBtn.disabled = false;
+    errorEl.classList.remove("hidden");
+    document.getElementById("crop-error-title").textContent =
+      dict.error_diagnosis_unavailable || "Crop diagnosis temporarily unavailable";
+    document.getElementById("crop-error-desc").textContent =
+      "Unable to connect to the diagnosis server. Please check your network.";
+    errorEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function renderCropDiagnosis(data) {
+  const dict = (window.I18N && window.I18N[state.lang]) || {};
+  const primary = data.primary || (data.predictions && data.predictions[0]);
+  if (!primary) return;
+
+  // Title / Condition
+  document.getElementById("crop-condition-title").textContent = primary.condition || primary.display_name || "Plant Condition";
+
+  // Health Status Badge
+  const statusBadge = document.getElementById("crop-health-status-badge");
+  if (primary.is_healthy) {
+    statusBadge.textContent = dict.badge_healthy_leaf || "Appears healthy based on model patterns";
+    statusBadge.className = "badge badge-reported";
+  } else {
+    statusBadge.textContent = dict.badge_possible_condition || "Possible plant-health condition detected";
+    statusBadge.className = "badge badge-calculated";
+  }
+
+  // Confidence meter
+  const confVal = primary.confidence || 0;
+  document.getElementById("crop-confidence-val").textContent = confVal + "%";
+  document.getElementById("crop-confidence-fill").style.width = confVal + "%";
+
+  const hintEl = document.getElementById("crop-confidence-hint");
+  if (confVal < 50) {
+    hintEl.classList.remove("hidden");
+  } else {
+    hintEl.classList.add("hidden");
+  }
+
+  // Secondary detections
+  const secondaryBox = document.getElementById("crop-secondary-box");
+  const secondaryList = document.getElementById("crop-secondary-list");
+  if (data.predictions && data.predictions.length > 1) {
+    secondaryList.innerHTML = "";
+    data.predictions.slice(1).forEach((p) => {
+      const li = document.createElement("li");
+      li.textContent = p.display_name + " (" + p.confidence + "% confidence)";
+      secondaryList.appendChild(li);
+    });
+    secondaryBox.classList.remove("hidden");
+  } else {
+    secondaryBox.classList.add("hidden");
+  }
+
+  // Draw Bounding Boxes on Canvas if available
+  drawBoundingBoxesOnPreview(data.predictions, data.image_meta);
+}
+
+function drawBoundingBoxesOnPreview(predictions, imageMeta) {
+  const img = document.getElementById("crop-preview-img");
+  const canvas = document.getElementById("crop-bbox-canvas");
+  if (!img || !canvas || !predictions || predictions.length === 0) return;
+
+  const renderWidth = img.clientWidth || img.offsetWidth;
+  const renderHeight = img.clientHeight || img.offsetHeight;
+
+  if (renderWidth === 0 || renderHeight === 0) return;
+
+  canvas.width = renderWidth;
+  canvas.height = renderHeight;
+
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const imgWidth = (imageMeta && imageMeta.width) || img.naturalWidth || renderWidth;
+  const imgHeight = (imageMeta && imageMeta.height) || img.naturalHeight || renderHeight;
+
+  const scaleX = renderWidth / imgWidth;
+  const scaleY = renderHeight / imgHeight;
+
+  predictions.forEach((p, index) => {
+    if (!p.bbox) return;
+
+    // Roboflow coordinates: x, y are center, width, height
+    const boxX = (p.bbox.x - p.bbox.width / 2) * scaleX;
+    const boxY = (p.bbox.y - p.bbox.height / 2) * scaleY;
+    const boxW = p.bbox.width * scaleX;
+    const boxH = p.bbox.height * scaleY;
+
+    // Draw box
+    ctx.strokeStyle = p.is_healthy ? "#22c55e" : (index === 0 ? "#f59e0b" : "#3b82f6");
+    ctx.lineWidth = 3;
+    ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    // Draw label pill
+    const label = p.display_name + " (" + p.confidence + "%)";
+    ctx.font = "bold 12px sans-serif";
+    const textWidth = ctx.measureText(label).width;
+
+    ctx.fillStyle = p.is_healthy ? "#22c55e" : (index === 0 ? "#f59e0b" : "#3b82f6");
+    ctx.fillRect(boxX, Math.max(0, boxY - 22), textWidth + 10, 22);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(label, boxX + 5, Math.max(15, boxY - 6));
+  });
+}
+
+function resetCropDoctor() {
+  state.cropImage = null;
+  state.cropDoctorResult = null;
+
+  const cameraInput = document.getElementById("crop-camera-input");
+  const fileInput = document.getElementById("crop-file-input");
+  if (cameraInput) cameraInput.value = "";
+  if (fileInput) fileInput.value = "";
+
+  document.getElementById("crop-preview-area").classList.add("hidden");
+  document.getElementById("crop-doctor-result-card").classList.add("hidden");
+  document.getElementById("crop-doctor-disclaimer").classList.add("hidden");
+  document.getElementById("crop-doctor-error").classList.add("hidden");
+  document.getElementById("crop-doctor-empty").classList.add("hidden");
+  document.getElementById("crop-doctor-loading").classList.add("hidden");
+
+  const canvas = document.getElementById("crop-bbox-canvas");
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
 }

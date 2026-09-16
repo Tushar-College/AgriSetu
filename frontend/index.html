@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>KisanMandi — Farmer Market Price Reference & Offer Evaluation Platform</title>
+  <title>AgriSetu — Farmer Market Price Reference & Offer Evaluation Platform</title>
   <meta name="description" content="Know recent reported market price ranges and evaluate buyer offers objectively with neutral, sourced benchmark data.">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Noto+Sans+Gurmukhi:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Global App Header -->
@@ -17,16 +17,26 @@
       <div class="brand-block" role="button" tabindex="0" onclick="navigateTo('home')">
         <div class="brand-logo" aria-hidden="true">🌾</div>
         <div class="brand-text">
-          <h1 class="brand-title" data-i18n="app_title">KisanMandi</h1>
+          <h1 class="brand-title" data-i18n="app_title">AgriSetu</h1>
           <p class="brand-tagline" data-i18n="app_tagline">Market Price Reference &amp; Offer Evaluation</p>
         </div>
       </div>
 
       <div class="header-actions">
-        <!-- Hindi/English Toggle -->
-        <div class="lang-toggle" role="group" aria-label="Language selection">
-          <button type="button" class="lang-btn active" id="btn-lang-en" onclick="setLanguage('en')">EN</button>
-          <button type="button" class="lang-btn" id="btn-lang-hi" onclick="setLanguage('hi')">हिंदी</button>
+        <!-- Multilingual Language Selector (9 Languages) -->
+        <div class="lang-selector-wrapper" role="group" aria-label="Language selection">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          <select id="select-language" class="lang-select" aria-label="Select Language" onchange="setLanguage(this.value)">
+            <option value="en" selected>English</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="ur">اردو (Urdu)</option>
+          </select>
         </div>
 
         <!-- Desktop Navigation -->
@@ -39,9 +49,17 @@
             <span class="nav-icon">⚖️</span>
             <span data-i18n="nav_check_offer">Check My Offer</span>
           </button>
+          <button type="button" class="nav-link" data-page="weather" onclick="navigateTo('weather')">
+            <span class="nav-icon">🌤️</span>
+            <span data-i18n="nav_weather">Weather Outlook</span>
+          </button>
           <button type="button" class="nav-link" data-page="schemes" onclick="navigateTo('schemes')">
             <span class="nav-icon">🏛️</span>
             <span data-i18n="nav_schemes">Government Schemes</span>
+          </button>
+          <button type="button" class="nav-link" data-page="crop-doctor" onclick="navigateTo('crop-doctor')">
+            <span class="nav-icon">🌱</span>
+            <span data-i18n="nav_crop_doctor">Crop Doctor</span>
           </button>
           <button type="button" class="nav-link" data-page="about" onclick="navigateTo('about')">
             <span class="nav-icon">ℹ️</span>
@@ -81,6 +99,23 @@
           <p class="hero-subtext" data-i18n="hero_subtitle">
             Access recent mandi price benchmarks sourced from Agmarknet. Neutral, transparent data with no price guarantees.
           </p>
+        </div>
+
+        <!-- Weather Outlook Home Quick Card -->
+        <div class="card weather-quick-card">
+          <div class="weather-quick-header">
+            <div class="weather-quick-title-group">
+              <span class="weather-quick-icon">🌤️</span>
+              <div>
+                <h4 class="weather-quick-title" data-i18n="home_weather_title">Agricultural Weather Outlook</h4>
+                <p class="weather-quick-subtitle" data-i18n="home_weather_subtitle">Check rain probability and local temperature before harvesting or transporting crops.</p>
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline" style="min-height: 40px; padding: 0.5rem 1rem;" onclick="navigateTo('weather')">
+              <span data-i18n="btn_check_weather_now">View Weather</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </div>
         </div>
 
         <!-- Crop & Location Selection Form -->
@@ -551,7 +586,7 @@
         <div class="hero-card">
           <span class="hero-chip" data-i18n="chip_transparency">Data Transparency &amp; Standards</span>
           <h2 id="about-heading" class="hero-headline" data-i18n="about_hero_title">
-            How KisanMandi Works
+            How AgriSetu Works
           </h2>
           <p class="hero-subtext" data-i18n="about_hero_subtitle">
             An open, transparent guide to where our data comes from, what our labels mean, and our system boundaries.
@@ -562,7 +597,7 @@
           <h3 class="about-card-title">1. What This Platform Is and Is Not</h3>
           <div class="about-grid-two">
             <div class="about-col col-positive">
-              <h4>✅ What KisanMandi Is:</h4>
+              <h4>✅ What AgriSetu Is:</h4>
               <ul>
                 <li>An <strong>information-access tool</strong> for Indian farmers.</li>
                 <li>A neutral reference to compare buyer offers against recent reported market prices.</li>
@@ -571,7 +606,7 @@
               </ul>
             </div>
             <div class="about-col col-negative">
-              <h4>❌ What KisanMandi Is NOT:</h4>
+              <h4>❌ What AgriSetu Is NOT:</h4>
               <ul>
                 <li>NOT a marketplace or trading platform.</li>
                 <li>NOT a buying, selling, or payment system.</li>
@@ -631,7 +666,382 @@
       </div>
     </section>
 
-  </main>
+      <!-- ============================================== -->
+    <!-- VIEW 5: WEATHER OUTLOOK                        -->
+    <!-- ============================================== -->
+    <section id="view-weather" class="page-view" aria-labelledby="weather-heading">
+      <div class="container narrow-container">
+        
+        <!-- Weather Hero Card -->
+        <div class="hero-card weather-hero">
+          <span class="hero-chip" data-i18n="chip_weather">Agricultural Weather Outlook</span>
+          <h2 id="weather-heading" class="hero-headline" data-i18n="weather_hero_title">
+            Weather Outlook &amp; Farm Planning
+          </h2>
+          <p class="hero-subtext" data-i18n="weather_hero_subtitle">
+            Hyper-local weather forecasts and agricultural possibility indicators to help plan harvesting, storage, and transport.
+          </p>
+        </div>
+
+        <!-- Location Selector Card -->
+        <div class="card form-card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <span class="card-step-num">🌤️</span>
+              <span data-i18n="weather_select_location_title">Select Location</span>
+            </h3>
+            <span class="badge badge-neutral" data-i18n="badge_local_forecast">Local Forecast</span>
+          </div>
+
+          <!-- Option 1: Use My Location (Explicit Click Only) -->
+          <div class="weather-location-option">
+            <button type="button" class="btn btn-primary btn-large btn-block" id="btn-use-location" onclick="handleUseMyLocation()">
+              <span class="btn-icon">📍</span>
+              <span data-i18n="btn_use_location">Use My Location</span>
+            </button>
+            <span class="form-hint text-center" style="text-align: center; margin-top: 0.35rem;" data-i18n="hint_use_location">
+              Browser will prompt for location permission on click. Coordinates are never saved.
+            </span>
+          </div>
+
+          <div class="weather-divider">
+            <span data-i18n="label_or_manual">OR SELECT MANUALLY</span>
+          </div>
+
+          <!-- Option 2: Manual Dropdowns Fallback -->
+          <form id="weather-manual-form" onsubmit="handleManualWeatherLookup(event)" novalidate>
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="select-weather-state" class="form-label" data-i18n="label_state">
+                  State <span class="required">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select id="select-weather-state" class="form-select" onchange="onWeatherStateChange()">
+                    <option value="" disabled selected data-i18n="placeholder_select_state">-- Choose State --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group col-half">
+                <label for="select-weather-district" class="form-label" data-i18n="label_district">
+                  District <span class="required">*</span>
+                </label>
+                <div class="select-wrapper">
+                  <select id="select-weather-district" class="form-select">
+                    <option value="" disabled selected data-i18n="placeholder_select_district">-- Choose District --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-secondary btn-large btn-block" id="btn-check-weather-manual">
+                <span class="btn-icon">🔍</span>
+                <span data-i18n="btn_check_weather">Check Weather</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Weather Loading State -->
+        <div id="weather-loading-state" class="state-container hidden" role="status" aria-live="polite">
+          <div class="spinner"></div>
+          <p class="state-text" data-i18n="loading_weather">Fetching local weather outlook...</p>
+        </div>
+
+        <!-- Weather Error / Permission State -->
+        <div id="weather-error-state" class="state-container hidden" role="alert">
+          <div class="state-icon">⚠️</div>
+          <h4 class="state-title" id="weather-error-title" data-i18n="weather_error_title">Location access unavailable</h4>
+          <p class="state-desc" id="weather-error-desc" data-i18n="weather_error_desc">
+            Location permission was denied or unavailable. Please select your State and District manually using the dropdowns above.
+          </p>
+        </div>
+
+        <!-- Weather Result Card Section -->
+        <div id="weather-result-card" class="card result-card hidden" aria-live="polite">
+          
+          <!-- Possibility Status Banner (Calculated) -->
+          <div class="weather-possibility-banner" id="weather-possibility-banner">
+            <div class="possibility-icon" id="weather-possibility-icon">🌤️</div>
+            <div class="possibility-content">
+              <div class="possibility-title" id="weather-possibility-label">Low Rain Possibility</div>
+              <p class="possibility-desc" id="weather-possibility-desc"></p>
+            </div>
+            <span class="badge badge-calculated" data-i18n="badge_calculated_tag">[Calculated]</span>
+          </div>
+
+          <!-- Location & Current Weather Showcase (Reported) -->
+          <div class="weather-current-showcase">
+            <div class="weather-location-row">
+              <div class="weather-location-info">
+                <span class="weather-location-icon">📍</span>
+                <strong class="weather-location-name" id="weather-location-text">Nashik, Maharashtra</strong>
+              </div>
+              <span class="badge" id="weather-status-badge">REPORTED</span>
+            </div>
+
+            <div class="weather-temp-hero">
+              <img id="weather-condition-icon" class="weather-condition-img" src="" alt="Weather condition" />
+              <div class="weather-temp-wrap">
+                <span class="weather-temp-val" id="weather-temp-val">28°C</span>
+                <span class="weather-condition-text" id="weather-condition-text">Partly Cloudy</span>
+              </div>
+              <span class="badge badge-subtle badge-reported" style="align-self: flex-start;" data-i18n="badge_reported_tag">[Reported]</span>
+            </div>
+
+            <!-- Vital Farm Weather Metrics Grid -->
+            <div class="weather-metrics-grid">
+              <div class="metric-item">
+                <span class="metric-icon">🌧️</span>
+                <span class="metric-label" data-i18n="label_rain_chance">Rain Probability</span>
+                <strong class="metric-val" id="weather-rain-prob">35%</strong>
+              </div>
+              <div class="metric-item">
+                <span class="metric-icon">💧</span>
+                <span class="metric-label" data-i18n="label_humidity">Humidity</span>
+                <strong class="metric-val" id="weather-humidity">65%</strong>
+              </div>
+              <div class="metric-item">
+                <span class="metric-icon">💨</span>
+                <span class="metric-label" data-i18n="label_wind">Wind Speed</span>
+                <strong class="metric-val" id="weather-wind">14 km/h</strong>
+              </div>
+              <div class="metric-item">
+                <span class="metric-icon">🌡️</span>
+                <span class="metric-label" data-i18n="label_today_range">Today's Range</span>
+                <strong class="metric-val" id="weather-minmax">21°C – 31°C</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3-Day Forecast Cards Grid -->
+          <div class="weather-forecast-section">
+            <div class="forecast-header">
+              <h4 class="forecast-title" data-i18n="title_forecast_3day">📅 3-Day Weather Forecast</h4>
+              <span class="badge badge-subtle badge-reported" data-i18n="badge_reported_tag">[Reported]</span>
+            </div>
+            <div class="forecast-grid" id="weather-forecast-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Why This Matters Section (Educational & Neutral) -->
+          <div class="weather-matters-box">
+            <div class="matters-header">
+              <span class="matters-icon">💡</span>
+              <strong class="matters-title" data-i18n="title_why_it_matters">Why this matters</strong>
+            </div>
+            <p class="matters-text" data-i18n="desc_why_it_matters">
+              Current weather conditions may be useful to consider when planning harvesting, storage, transportation, and other farm activities.
+            </p>
+          </div>
+
+          <!-- Mandatory Legal Disclaimer -->
+          <div class="disclaimer-box" role="note">
+            <span class="disclaimer-icon">⚠️</span>
+            <p class="disclaimer-text" data-i18n="weather_disclaimer">
+              Weather information is based on current forecast data and may change. This is an indicative weather outlook, not a guaranteed prediction.
+            </p>
+          </div>
+
+          <!-- Quick Navigation Actions -->
+          <div class="offer-next-steps">
+            <button type="button" class="btn btn-secondary btn-large" onclick="syncWeatherToPriceLookup()">
+              <span class="btn-icon">📊</span>
+              <span data-i18n="btn_check_mandi_prices">View Mandi Prices for this Location</span>
+            </button>
+            <button type="button" class="btn btn-outline" onclick="navigateTo('check-offer')">
+              <span class="btn-icon">⚖️</span>
+              <span data-i18n="nav_check_offer">Check My Offer</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 6: CROP DOCTOR (AI LEAF/CROP DIAGNOSIS)   -->
+    <!-- ============================================== -->
+    <section id="view-crop-doctor" class="page-view" aria-labelledby="crop-doctor-heading">
+      <div class="container narrow-container">
+
+        <!-- Hero Card -->
+        <div class="hero-card crop-doctor-hero">
+          <span class="hero-chip" data-i18n="chip_crop_doctor">AI Plant Health Diagnosis</span>
+          <h2 id="crop-doctor-heading" class="hero-headline" data-i18n="crop_doctor_hero_title">
+            Crop Doctor — AI Plant Health
+          </h2>
+          <p class="hero-subtext" data-i18n="crop_doctor_hero_subtitle">
+            Upload or take a clear photo of your crop or leaf to check for possible plant-health problems.
+          </p>
+        </div>
+
+        <!-- Quality Guidance Card -->
+        <div class="card quality-guidance-card">
+          <div class="guidance-header">
+            <span class="guidance-icon">💡</span>
+            <strong class="guidance-title" data-i18n="title_quality_guidance">For better results:</strong>
+          </div>
+          <ul class="quality-bullets">
+            <li data-i18n="guidance_bullet_1">Use good natural lighting</li>
+            <li data-i18n="guidance_bullet_2">Keep the affected leaf or plant area clearly in focus</li>
+            <li data-i18n="guidance_bullet_3">Avoid blurry or distant photos</li>
+            <li data-i18n="guidance_bullet_4">Photograph the affected leaf, fruit, or stem closely</li>
+          </ul>
+        </div>
+
+        <!-- Photo Action Card -->
+        <div class="card form-card crop-upload-card">
+          <!-- Hidden file inputs -->
+          <input
+            type="file"
+            id="crop-camera-input"
+            accept="image/jpeg,image/png,image/webp"
+            capture="environment"
+            class="hidden"
+            onchange="handleCropImageInput(event)"
+          />
+          <input
+            type="file"
+            id="crop-file-input"
+            accept="image/jpeg,image/png,image/webp"
+            class="hidden"
+            onchange="handleCropImageInput(event)"
+          />
+
+          <!-- Photo Option Buttons -->
+          <div class="photo-options-grid">
+            <button type="button" class="btn btn-primary btn-large btn-photo-action" onclick="triggerCropCamera()">
+              <span class="btn-icon">📷</span>
+              <span data-i18n="btn_take_photo">Take a Photo</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-large btn-photo-action" onclick="triggerCropUpload()">
+              <span class="btn-icon">🖼️</span>
+              <span data-i18n="btn_upload_photo">Upload Photo</span>
+            </button>
+          </div>
+
+          <!-- Selected Image Preview Area (Hidden by default) -->
+          <div id="crop-preview-area" class="crop-preview-area hidden">
+            <div class="image-preview-wrapper" id="crop-preview-wrapper">
+              <img id="crop-preview-img" class="crop-preview-img" alt="Crop leaf preview" />
+              <canvas id="crop-bbox-canvas" class="crop-bbox-canvas"></canvas>
+            </div>
+
+            <!-- Preview Actions -->
+            <div class="preview-actions-bar">
+              <button type="button" class="btn btn-primary btn-large" id="btn-analyze-crop" onclick="analyzeCrop()">
+                <span class="btn-icon">🔍</span>
+                <span data-i18n="btn_analyze_crop">Analyze Crop</span>
+              </button>
+              <button type="button" class="btn btn-outline" id="btn-change-photo" onclick="triggerCropUpload()">
+                <span class="btn-icon">🔄</span>
+                <span data-i18n="btn_change_photo">Change Photo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="crop-doctor-loading" class="state-container card hidden" aria-live="polite">
+          <div class="loading-spinner"></div>
+          <p class="state-title" data-i18n="loading_analyzing_crop">Analyzing crop image with AI model...</p>
+        </div>
+
+        <!-- Diagnosis Unavailable / Error State -->
+        <div id="crop-doctor-error" class="state-container card hidden" aria-live="polite">
+          <div class="state-icon">⚠️</div>
+          <h4 class="state-title" id="crop-error-title" data-i18n="error_diagnosis_unavailable">Crop diagnosis temporarily unavailable</h4>
+          <p class="state-desc" id="crop-error-desc">We couldn't analyze this image. Please check your connection or try a clearer photo.</p>
+        </div>
+
+        <!-- No Detection Friendly State -->
+        <div id="crop-doctor-empty" class="state-container card hidden" aria-live="polite">
+          <div class="state-icon">🔍</div>
+          <h4 class="state-title" data-i18n="label_possible_diagnosis">Possible Diagnosis</h4>
+          <p class="state-desc" data-i18n="msg_no_condition_detected">
+            We couldn't identify a clear crop-health condition from this image. Please try a clearer photo showing the affected leaf or plant.
+          </p>
+          <div class="offer-next-steps" style="margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" onclick="resetCropDoctor()">
+              <span class="btn-icon">🔄</span>
+              <span data-i18n="btn_analyze_another">Analyze Another Photo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Diagnosis Result Card -->
+        <div id="crop-doctor-result-card" class="card result-card hidden" aria-live="polite">
+          <div class="crop-result-header">
+            <div class="crop-result-badge-row">
+              <span class="crop-result-brand">🌱 Crop Doctor</span>
+              <span class="badge badge-calculated" data-i18n="label_possible_diagnosis">[Possible Diagnosis]</span>
+            </div>
+            <h3 class="crop-condition-title" id="crop-condition-title">Tomato — Early Blight</h3>
+            <span class="badge" id="crop-health-status-badge">Possible plant-health condition detected</span>
+          </div>
+
+          <!-- Confidence Showcase -->
+          <div class="crop-confidence-box">
+            <div class="confidence-header">
+              <span class="confidence-label">
+                📊 <strong data-i18n="label_confidence">Confidence</strong>
+              </span>
+              <strong class="confidence-value" id="crop-confidence-val">87%</strong>
+            </div>
+            <div class="confidence-track">
+              <div class="confidence-fill" id="crop-confidence-fill" style="width: 87%;"></div>
+            </div>
+            <p id="crop-confidence-hint" class="confidence-hint hidden" data-i18n="msg_low_confidence_hint">
+              Low-confidence prediction — try uploading a clearer photo.
+            </p>
+          </div>
+
+          <!-- Detection Details -->
+          <div class="crop-detection-info">
+            <div class="detection-row">
+              <span class="detection-icon">🔍</span>
+              <div>
+                <strong data-i18n="label_detection_status">Detection</strong>
+                <p class="detection-text" id="crop-detection-desc">
+                  Affected area detected in the image based on model patterns.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Detections (if any) -->
+          <div id="crop-secondary-box" class="crop-secondary-box hidden">
+            <strong class="secondary-title">Additional Model Detections:</strong>
+            <ul id="crop-secondary-list" class="secondary-list"></ul>
+          </div>
+
+          <!-- Action Reset Button -->
+          <div class="offer-next-steps" style="margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary btn-large" onclick="resetCropDoctor()">
+              <span class="btn-icon">🔄</span>
+              <span data-i18n="btn_analyze_another">Analyze Another Photo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- MANDATORY DISCLAIMER BOX (Always visible directly below result) -->
+        <div id="crop-doctor-disclaimer" class="crop-disclaimer-box hidden" role="note">
+          <div class="crop-disclaimer-header">
+            <span class="crop-disclaimer-icon">⚠️</span>
+            <strong class="crop-disclaimer-title" data-i18n="crop_doctor_disclaimer_title">Important Disclaimer</strong>
+          </div>
+          <p class="crop-disclaimer-text" data-i18n="crop_doctor_disclaimer_text">
+            AI-based crop diagnosis is indicative only and may be incorrect. Do not treat this result as a confirmed diagnosis or guaranteed treatment recommendation. For serious, uncertain, or widespread crop problems, consult a qualified agricultural expert or local agriculture department before applying fertilizers or pesticides.
+          </p>
+        </div>
+
+      </div>
+    </section>
+</main>
 
   <!-- Mobile Bottom Navigation Bar -->
   <nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile Navigation">
@@ -643,9 +1053,17 @@
       <span class="m-icon">⚖️</span>
       <span class="m-label" data-i18n="nav_check_offer">Check Offer</span>
     </button>
+    <button type="button" class="mobile-nav-btn" data-page="weather" onclick="navigateTo('weather')">
+      <span class="m-icon">🌤️</span>
+      <span class="m-label" data-i18n="nav_weather">Weather</span>
+    </button>
     <button type="button" class="mobile-nav-btn" data-page="schemes" onclick="navigateTo('schemes')">
       <span class="m-icon">🏛️</span>
       <span class="m-label" data-i18n="nav_schemes">Schemes</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-page="crop-doctor" onclick="navigateTo('crop-doctor')">
+      <span class="m-icon">🌱</span>
+      <span class="m-label" data-i18n="nav_crop_doctor">Crop Doctor</span>
     </button>
     <button type="button" class="mobile-nav-btn" data-page="about" onclick="navigateTo('about')">
       <span class="m-icon">ℹ️</span>
@@ -656,6 +1074,7 @@
   <!-- Global Toast Alert -->
   <div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

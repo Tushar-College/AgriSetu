@@ -1,4 +1,4 @@
-﻿const express = require("express");
+const express = require("express");
 const router = express.Router();
 const agmarknetService = require("../services/agmarknetService");
 
@@ -35,7 +35,7 @@ const LOCATIONS = [
   {
     state: "Uttar Pradesh",
     state_hindi: "उत्तर प्रदेश",
-    districts: ["Agra", "Aligarh", "Mathura", "Kanpur", "Varanasi", "Lucknow"]
+    districts: ["Agra", "Aligarh", "Mathura", "Kanpur", "Varanasi", "Lucknow", "Ghaziabad"]
   },
   {
     state: "Gujarat",

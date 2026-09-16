@@ -52,7 +52,7 @@ router.post("/", async (req, res) => {
     // Optional quantity validation (Section 11.2: optional, for context only)
     let numericQuantity = null;
     if (quantity !== undefined && quantity !== null && quantity !== "") {
-      numericQuantity = Number(quantity);
+      numericQuantity = Number  (quantity);
       if (isNaN(numericQuantity) || numericQuantity <= 0) {
         return res.status(400).json({
           success: false,
