@@ -509,7 +509,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "Important Disclaimer",
     "crop_doctor_disclaimer_text": "AI-based crop diagnosis is indicative only and may be incorrect. Do not treat this result as a confirmed diagnosis or guaranteed treatment recommendation. For serious, uncertain, or widespread crop problems, consult a qualified agricultural expert or local agriculture department before applying fertilizers or pesticides.",
     "error_no_image_selected": "Please capture or upload an image of your crop first.",
-    "error_diagnosis_unavailable": "Crop diagnosis is temporarily unavailable. Please try again later."
+    "error_diagnosis_unavailable": "Crop diagnosis is temporarily unavailable. Please try again later.",
+    "offline_banner_text": "You are offline. Showing local benchmark and cached data.",
+    "offline_badge": "OFFLINE",
+    "offline_reconnected": "Connection restored. Live updates available.",
+    "offline_crop_doctor_warning": "AI Crop Doctor requires an active internet connection to diagnose leaf images.",
+    "badge_offline_benchmark": "OFFLINE BENCHMARK"
   },
   "hi": {
     "app_title": "एग्रीसेतु",
@@ -656,7 +661,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "महत्वपूर्ण अस्वीकरण (Disclaimer)",
     "crop_doctor_disclaimer_text": "एआई-आधारित फसल निदान केवल सांकेतिक है और गलत हो सकता है। इसे पक्का निदान या गारंटीशुदा उपचार अनुशंसा न मानें। गंभीर, अनिश्चित या व्यापक फसल समस्याओं के लिए, उर्वरक या कीटनाशक डालने से पहले किसी योग्य कृषि विशेषज्ञ या स्थानीय कृषि विभाग से परामर्श लें।",
     "error_no_image_selected": "कृपया पहले अपनी फसल की फोटो खींचें या अपलोड करें।",
-    "error_diagnosis_unavailable": "फसल निदान सेवा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें।"
+    "error_diagnosis_unavailable": "फसल निदान सेवा अस्थायी रूप से अनुपलब्ध है। कृपया बाद में पुनः प्रयास करें।",
+    "offline_banner_text": "आप ऑफ़लाइन हैं। स्थानीय बेंचमार्क और कैश्ड डेटा दिखाया जा रहा है।",
+    "offline_badge": "ऑफ़लाइन",
+    "offline_reconnected": "कनेक्शन बहाल हुआ। लाइव अपडेट उपलब्ध हैं।",
+    "offline_crop_doctor_warning": "फसल रोग निदान के लिए सक्रिय इंटरनेट कनेक्शन की आवश्यकता है।",
+    "badge_offline_benchmark": "ऑफ़लाइन बेंचमार्क डेटा"
   },
   "ta": {
     "app_title": "அக்ரிசேது",
@@ -803,7 +813,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "முக்கிய மறுப்பு (Disclaimer)",
     "crop_doctor_disclaimer_text": "AI அடிப்படையிலான பயிர் கண்டறிதல் ஒரு வழிகாட்டுதல் மட்டுமே, தவறாகவும் இருக்கலாம். இதை உறுதிசெய்யப்பட்ட நோயறிதல் அல்லது உத்தரவாதமான சிகிச்சையாக கருத வேண்டாம். தீவிர அல்லது நிச்சயமற்ற பயிர் பிரச்சனைகளுக்கு உரம் அல்லது பூச்சிக்கொல்லிகளைப் பயன்படுத்துவதற்கு முன் வேளாண் நிபுணரை அணுகவும்.",
     "error_no_image_selected": "முதலில் உங்கள் பயிரின் புகைப்படத்தை எடுக்கவும் அல்லது பதிவேற்றவும்.",
-    "error_diagnosis_unavailable": "பயிர் கண்டறிதல் தற்காலிகமாக கிடைக்கவில்லை. பின்னர் மீண்டும் முயற்சிக்கவும்."
+    "error_diagnosis_unavailable": "பயிர் கண்டறிதல் தற்காலிகமாக கிடைக்கவில்லை. பின்னர் மீண்டும் முயற்சிக்கவும்.",
+    "offline_banner_text": "நீங்கள் ஆஃப்லைனில் உள்ளீர்கள். உள்ளூர் அளவுகோல் மற்றும் சேமிக்கப்பட்ட தரவு காட்டப்படுகிறது.",
+    "offline_badge": "ஆஃப்லைன்",
+    "offline_reconnected": "இணைய இணைப்பு மீண்டும் கிடைத்தது. நேரலை புதுப்பிப்புகள் கிடைக்கின்றன.",
+    "offline_crop_doctor_warning": "இலை நோய் கண்டறிதலுக்கு இணைய இணைப்பு தேவைப்படுகிறது.",
+    "badge_offline_benchmark": "ஆஃப்லைன் அளவுகோல் தரவு"
   },
   "te": {
     "app_title": "అగ్రిసేతు",
@@ -950,7 +965,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "ముఖ్యమైన నిరాకరణ (Disclaimer)",
     "crop_doctor_disclaimer_text": "AI ఆధారిత పంట నిర్ధారణ కేవలం సూచిక మాత్రమే మరియు సరికానిది కావచ్చు. దీనిని ధృవీకరించబడిన వ్యాధి నిర్ధారణ లేదా చికిత్స సిఫార్సుగా భావించవద్దు. తీవ్రమైన సమస్యల కోసం ఎరువులు లేదా పురుగుమందులు వాడే ముందు అర్హత కలిగిన వ్యవసాయ నిపుణుడిని సంప్రదించండి.",
     "error_no_image_selected": "దయచేసి మొదట మీ పంట ఫోటోను తీయండి లేదా అప్‌లోడ్ చేయండి.",
-    "error_diagnosis_unavailable": "పంట నిర్ధారణ తాత్కాలికంగా అందుబాటులో లేదు. దయచేసి తర్వాత మళ్ళీ ప్రయత్నించండి."
+    "error_diagnosis_unavailable": "పంట నిర్ధారణ తాత్కాలికంగా అందుబాటులో లేదు. దయచేసి తర్వాత మళ్ళీ ప్రయత్నించండి.",
+    "offline_banner_text": "మీరు ఆఫ్‌లైన్‌లో ఉన్నారు. స్థానిక బెంచ్‌మార్క్ మరియు కాష్ చేయబడిన డేటా చూపబడుతోంది.",
+    "offline_badge": "ఆఫ్‌లైన్",
+    "offline_reconnected": "ఇంటర్నెట్ కనెక్షన్ పునరుద్ధరించబడింది. లైవ్ అప్‌డేట్‌లు అందుబాటులో ఉన్నాయి.",
+    "offline_crop_doctor_warning": "ఆకు వ్యాధి నిర్ధారణకు క్రియాశీల ఇంటర్నెట్ కనెక్షన్ అవసరం.",
+    "badge_offline_benchmark": "ఆఫ్‌లైన్ బెంచ్‌మార్క్ డేటా"
   },
   "kn": {
     "app_title": "ಅಗ್ರಿಸೇತು",
@@ -1097,7 +1117,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "ಮುಖ್ಯ ಹಕ್ಕು ನಿರಾಕರಣೆ (Disclaimer)",
     "crop_doctor_disclaimer_text": "AI ಆಧಾರಿತ ಬೆಳೆ ತಪಾಸಣೆ ಕೇವಲ ಸೂಚಕವಾಗಿದೆ ಮತ್ತು ತಪ್ಪಾಗಿರಬಹುದು. ಇದನ್ನು ದೃಢೀಕೃತ ರೋಗನಿರ್ಣಯ ಅಥವಾ ಖಚಿತ ಚಿಕಿತ್ಸೆ ಎಂದು ಪರಿಗಣಿಸಬೇಡಿ. ಗಂಭೀರ ಸಮಸ್ಯೆಗಳಿದ್ದಲ್ಲಿ ರಸಗೊಬ್ಬರ ಅಥವಾ ಕೀಟನಾಶಕ ಬಳಸುವ ಮುನ್ನ ಕೃಷಿ ತಜ್ಞರನ್ನು ಸಂಪರ್ಕಿಸಿ.",
     "error_no_image_selected": "ದಯವಿಟ್ಟು ಮೊದಲು ನಿಮ್ಮ ಬೆಳೆಯ ಫೋಟೋ ತೆಗೆದುಕೊಳ್ಳಿ ಅಥವಾ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.",
-    "error_diagnosis_unavailable": "ಬೆಳೆ ತಪಾಸಣೆ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    "error_diagnosis_unavailable": "ಬೆಳೆ ತಪಾಸಣೆ ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    "offline_banner_text": "ನೀವು ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿದ್ದೀರಿ. ಸ್ಥಳೀಯ ಬೆಂಚ್‌ಮಾರ್ಕ್ ಮತ್ತು ಸಂಗ್ರಹಿಸಿದ ಡೇಟಾವನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ.",
+    "offline_badge": "ಆಫ್‌ಲೈನ್",
+    "offline_reconnected": "ಸಂಪರ್ಕ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ. ಲೈವ್ ನವೀಕರಣಗಳು ಲಭ್ಯವಿದೆ.",
+    "offline_crop_doctor_warning": "ಎಲೆ ರೋಗ ಪತ್ತೆ ಮಾಡಲು ಇಂಟರ್ನೆಟ್ ಸಂಪರ್ಕದ ಅಗತ್ಯವಿದೆ.",
+    "badge_offline_benchmark": "ಆಫ್‌ಲೈನ್ ಬೆಂಚ್‌ಮಾರ್ಕ್ ಡೇಟಾ"
   },
   "mr": {
     "app_title": "ॲग्रीसेतू",
@@ -1244,7 +1269,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "महत्त्वाचा अस्वीकरण (Disclaimer)",
     "crop_doctor_disclaimer_text": "एआय-आधारित पीक निदान केवळ एक मार्गदर्शक संदर्भ आहे आणि ते चुकीचे असू शकते. यास अंतिम निदान किंवा खात्रीशीर उपाय मानू नका. गंभीर पीक समस्येसाठी खते किंवा कीटकनाशके वापरण्यापूर्वी अधिकृत कृषी तज्ज्ञांचा सल्ला घ्या.",
     "error_no_image_selected": "कृपया प्रथम आपल्या पिकाचा फोटो काढा किंवा अपलोड करा.",
-    "error_diagnosis_unavailable": "पीक निदान सेवा तात्पुरती अनुपलब्ध आहे. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा."
+    "error_diagnosis_unavailable": "पीक निदान सेवा तात्पुरती अनुपलब्ध आहे. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.",
+    "offline_banner_text": "तुम्ही ऑफलाइन आहात. स्थानिक बेंचमार्क आणि कॅश केलेला डेटा दाखवला जात आहे.",
+    "offline_badge": "ऑफलाइन",
+    "offline_reconnected": "इंटरनेट कनेक्शन पूर्ववत झाले. थेट अपडेट उपलब्ध आहेत.",
+    "offline_crop_doctor_warning": "पीक रोग निदानासाठी सक्रिय इंटरनेट कनेक्शन आवश्यक आहे.",
+    "badge_offline_benchmark": "ऑफलाइन बेंचमार्क डेटा"
   },
   "gu": {
     "app_title": "એગ્રીસેતુ",
@@ -1391,7 +1421,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "મહત્વપૂર્ણ અસ્વીકરણ (Disclaimer)",
     "crop_doctor_disclaimer_text": "AI-આધારિત પાક નિદાન માત્ર એક સંકેત છે અને ભૂલભરેલું હોઈ શકે છે. તેને પુષ્ટિ થયેલ નિદાન કે ખાતરીપૂર્વકની ભલામણ ન ગણો. ગંભીર સમસ્યાઓ માટે ખાતર કે જંતુનાશકો વાપરતા પહેલા કૃષિ નિષ્ણાતની સલાહ લો.",
     "error_no_image_selected": "કૃપા કરીને પહેલા તમારા પાકનો ફોટો લો અથવા અપલોડ કરો.",
-    "error_diagnosis_unavailable": "પાક નિદાન સેવા હાલ પૂરતી ઉપલબ્ધ નથી. કૃપા કરીને થોડી વાર પછી પ્રયત્ન કરો."
+    "error_diagnosis_unavailable": "પાક નિદાન સેવા હાલ પૂરતી ઉપલબ્ધ નથી. કૃપા કરીને થોડી વાર પછી પ્રયત્ન કરો.",
+    "offline_banner_text": "તમે ઑફલાઇન છો. સ્થાનિક બેન્ચમાર્ક અને કેશ્ડ ડેટા બતાવવામાં આવી રહ્યો છે.",
+    "offline_badge": "ઑફલાઇન",
+    "offline_reconnected": "કનેક્શન પુનઃસ્થાપિત થયું. લાઇવ અપડેટ્સ ઉપલબ્ધ છે.",
+    "offline_crop_doctor_warning": "પાક રોગ નિદાન માટે સક્રિય ઇન્ટરનેટ કનેક્શન જરૂરી છે.",
+    "badge_offline_benchmark": "ઑફલાઇન બેન્ચમાર્ક ડેટા"
   },
   "pa": {
     "app_title": "ਐਗਰੀਸੇਤੂ",
@@ -1538,7 +1573,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "ਮਹੱਤਵਪੂਰਨ ਬੇਦਾਅਵਾ (Disclaimer)",
     "crop_doctor_disclaimer_text": "AI-ਅਧਾਰਿਤ ਫਸਲ ਜਾਂਚ ਸਿਰਫ ਸੰਕੇਤਕ ਹੈ ਅਤੇ ਗਲਤ ਵੀ ਹੋ ਸਕਦੀ ਹੈ। ਇਸ ਨੂੰ ਪੱਕਾ ਨਿਦਾਨ ਜਾਂ ਗਰੰਟੀਸ਼ੁਦਾ ਇਲਾਜ ਨਾ ਮੰਨੋ। ਗੰਭੀਰ ਫਸਲੀ ਸਮੱਸਿਆਵਾਂ ਲਈ ਖਾਦ ਜਾਂ ਕੀਟਨਾਸ਼ਕ ਵਰਤਣ ਤੋਂ ਪਹਿਲਾਂ ਖੇਤੀਬਾੜੀ ਮਾਹਿਰ ਦੀ ਸਲਾਹ ਲਓ।",
     "error_no_image_selected": "ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ ਆਪਣੀ ਫਸਲ ਦੀ ਫੋਟੋ ਲਓ ਜਾਂ ਅੱਪਲੋਡ ਕਰੋ।",
-    "error_diagnosis_unavailable": "ਫਸਲ ਜਾਂਚ ਸੇਵਾ ਫਿਲਹਾਲ ਉਪਲਬਧ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਬਾਅਦ ਵਿੱਚ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+    "error_diagnosis_unavailable": "ਫਸਲ ਜਾਂਚ ਸੇਵਾ ਫਿਲਹਾਲ ਉਪਲਬਧ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਬਾਅਦ ਵਿੱਚ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
+    "offline_banner_text": "ਤੁਸੀਂ ਔਫਲਾਈਨ ਹੋ। ਸਥਾਨਕ ਬੈਂਚਮਾਰਕ ਅਤੇ ਕੈਸ਼ ਕੀਤਾ ਡਾਟਾ ਦਿਖਾਇਆ ਜਾ ਰਿਹਾ ਹੈ।",
+    "offline_badge": "ਔਫਲਾਈਨ",
+    "offline_reconnected": "ਕੁਨੈਕਸ਼ਨ ਬਹਾਲ ਹੋਇਆ। ਲਾਈਵ ਅੱਪਡੇਟ ਉਪਲਬਧ ਹਨ।",
+    "offline_crop_doctor_warning": "ਫ਼ਸਲ ਰੋਗ ਨਿਦਾਨ ਲਈ ਕਿਰਿਆਸ਼ੀਲ ਇੰਟਰਨੈਟ ਕਨੈਕਸ਼ਨ ਦੀ ਲੋੜ ਹੈ।",
+    "badge_offline_benchmark": "ਔਫਲਾਈਨ ਬੈਂਚਮਾਰਕ ਡਾਟਾ"
   },
   "ur": {
     "app_title": "ایگری سیتو",
@@ -1685,6 +1725,12 @@ window.I18N = {
     "crop_doctor_disclaimer_title": "اہم دستبرداری (Disclaimer)",
     "crop_doctor_disclaimer_text": "اے آئی پر مبنی فصل کی تشخیص محض اشارے کے لیے ہے اور اس میں غلطی کا امکان ہو سکتا ہے۔ اسے حتمی تشخیص یا علاج کا مستند مشورہ نہ سمجھیں۔ سنگین یا وسیع مسائل کی صورت میں کھاد یا کیڑے مار ادویات کے استعمال سے قبل متعلقہ زرعی ماہر یا محکمہ زراعت سے ضرور مشورہ کریں۔",
     "error_no_image_selected": "براہ کرم پہلے اپنی فصل کی تصویر لیں یا اپ لوڈ کریں۔",
-    "error_diagnosis_unavailable": "فصل کی تشخیص فی الحال دستیاب نہیں ہے۔ براہ کرم کچھ دیر بعد دوبارہ کوشش کریں۔"
+    "error_diagnosis_unavailable": "فصل کی تشخیص فی الحال دستیاب نہیں ہے۔ براہ کرم کچھ دیر بعد دوبارہ کوشش کریں۔",
+    "offline_banner_text": "آپ آف لائن ہیں۔ مقامی بینچ مارک اور کیش شدہ ڈیٹا دکھایا جا رہا ہے۔",
+    "offline_badge": "آف لائن",
+    "offline_reconnected": "کنکشن بحال ہو گیا۔ لائیو اپ ڈیٹس دستیاب ہیں۔",
+    "offline_crop_doctor_warning": "فصل کی بیماری کی تشخیص کے لیے فعال انٹرنیٹ کنکشن درکار ہے۔",
+    "badge_offline_benchmark": "آف لائن بینچ مارک ڈیٹا"
   }
 };
+

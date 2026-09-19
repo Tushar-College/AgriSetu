@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e5631"/>
+      <stop offset="100%" stop-color="#11381e"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbc02d"/>
+      <stop offset="100%" stop-color="#f57f17"/>
+    </linearGradient>
+    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4caf50"/>
+      <stop offset="100%" stop-color="#2e7d32"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="108" fill="url(#bgGrad)"/>
+  <circle cx="256" cy="180" r="70" fill="url(#goldGrad)" opacity="0.9"/>
+  <circle cx="256" cy="180" r="95" fill="#fbc02d" opacity="0.2"/>
+  <path d="M60 410 Q 256 360 452 410 L 452 452 L 60 452 Z" fill="#2d4a22" opacity="0.8"/>
+  <path d="M 256 320 C 180 300 130 220 150 140 C 220 140 260 210 256 320 Z" fill="url(#leafGrad)"/>
+  <path d="M 256 300 C 330 280 370 200 350 130 C 280 130 250 200 256 300 Z" fill="#66bb6a"/>
+  <path d="M 250 420 Q 254 300 256 190 Q 258 300 262 420 Z" fill="#a5d6a7"/>
+  <ellipse cx="256" cy="170" rx="14" ry="24" fill="url(#goldGrad)"/>
+  <ellipse cx="240" cy="140" rx="12" ry="20" transform="rotate(-20 240 140)" fill="url(#goldGrad)"/>
+  <ellipse cx="272" cy="140" rx="12" ry="20" transform="rotate(20 272 140)" fill="url(#goldGrad)"/>
+  <ellipse cx="256" cy="115" rx="10" ry="18" fill="url(#goldGrad)"/>
+</svg>

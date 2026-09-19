@@ -1,0 +1,37 @@
+{
+  "name": "AgriSetu — Farmer Market Price & Advisory Platform",
+  "short_name": "AgriSetu",
+  "description": "Empowering farmers with transparent mandi price references, buyer offer evaluation, weather outlook, government schemes, and AI crop diagnosis.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6f0",
+  "theme_color": "#1e5631",
+  "lang": "en",
+  "categories": [
+    "finance",
+    "utilities",
+    "agriculture"
+  ],
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

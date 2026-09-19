@@ -17,7 +17,10 @@ const state = {
   searchQuery: "",
   activeWeather: null,
   cropImage: null,
-  cropDoctorResult: null
+  cropDoctorResult: null,
+  isOnline: typeof navigator !== "undefined" && navigator.onLine !== undefined ? navigator.onLine : true,
+  localFallbackPrices: null,
+  localFallbackWeather: null
 };
 
 // Centralized i18n Dictionary Access
@@ -29,6 +32,8 @@ const I18N = new Proxy({}, {
 // Document Ready Initialization
 document.addEventListener("DOMContentLoaded", async () => {
   setupLanguage();
+  registerServiceWorker();
+  setupNetworkStatusListeners();
   await loadMetadata();
   await loadSchemes();
   
@@ -37,6 +42,64 @@ document.addEventListener("DOMContentLoaded", async () => {
     applyDemoCombination(state.demoCombinations[0], false);
   }
 });
+
+
+// ==========================================================================
+// Progressive Web App (PWA) & Service Worker Registration
+// ==========================================================================
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/service-worker.js")
+        .then((registration) => {
+          console.log("[AgriSetu PWA] Service Worker registered with scope:", registration.scope);
+        })
+        .catch((error) => {
+          console.warn("[AgriSetu PWA] Service Worker registration failed:", error);
+        });
+    });
+  }
+}
+
+// Network Online/Offline Status Listeners & Banner Management
+function setupNetworkStatusListeners() {
+  const banner = document.getElementById("offline-indicator-banner");
+  const msgEl = document.getElementById("offline-banner-message");
+
+  function updateStatus() {
+    const isOnline = navigator.onLine;
+    state.isOnline = isOnline;
+    const dict = (window.I18N && window.I18N[state.lang]) || {};
+
+    if (!isOnline) {
+      if (banner) {
+        banner.classList.remove("hidden");
+        banner.classList.remove("offline-banner-online");
+        if (msgEl) {
+          msgEl.textContent = dict.offline_banner_text || "You are offline. Showing local benchmark and cached data.";
+        }
+      }
+    } else {
+      if (banner && !banner.classList.contains("hidden") && !banner.classList.contains("offline-banner-online")) {
+        banner.classList.add("offline-banner-online");
+        if (msgEl) {
+          msgEl.textContent = dict.offline_reconnected || "Connection restored. Live updates available.";
+        }
+        setTimeout(() => {
+          banner.classList.add("hidden");
+          banner.classList.remove("offline-banner-online");
+        }, 3500);
+      }
+    }
+  }
+
+  window.addEventListener("online", updateStatus);
+  window.addEventListener("offline", updateStatus);
+  if (!navigator.onLine) {
+    updateStatus();
+  }
+}
 
 // Navigation Handling
 function navigateTo(pageId) {
@@ -130,7 +193,7 @@ function applyTranslations() {
     : "AgriSetu — Farmer Market Price Reference & Offer Evaluation Platform";
 }
 
-// Load Platform Metadata from Backend
+// Load Platform Metadata from Backend (with local offline fallback)
 async function loadMetadata() {
   try {
     const [commRes, locRes, demoRes] = await Promise.all([
@@ -142,14 +205,23 @@ async function loadMetadata() {
     state.commodities = commRes.commodities || [];
     state.locations = locRes.locations || [];
     state.demoCombinations = demoRes.combinations || [];
-
-    populateCommodityDropdowns();
-    populateStateDropdowns();
-    renderDemoPills();
   } catch (err) {
-    console.error("Failed to load metadata:", err);
-    showToast("Could not load location data. Check network.");
+    console.warn("API metadata fetch failed, loading local fallback metadata:", err);
+    try {
+      const localMetaRes = await fetch("/data/metadata.json");
+      const localMeta = await localMetaRes.json();
+      state.commodities = localMeta.commodities || [];
+      state.locations = localMeta.locations || [];
+      state.demoCombinations = localMeta.combinations || [];
+    } catch (fallbackErr) {
+      console.error("Critical: Failed to load local fallback metadata:", fallbackErr);
+      showToast("Could not load location data. Check network.");
+    }
   }
+
+  populateCommodityDropdowns();
+  populateStateDropdowns();
+  renderDemoPills();
 }
 
 // Populate Commodity Dropdowns
@@ -296,6 +368,74 @@ async function handlePriceLookup(event) {
   await fetchPrice(commodity, stateVal, district);
 }
 
+
+// Retrieve benchmark price reference when offline
+async function getOfflinePriceReference(commodity, stateVal, district) {
+  try {
+    if (!state.localFallbackPrices) {
+      const res = await fetch("/data/fallback_prices.json");
+      state.localFallbackPrices = await res.json();
+    }
+    const list = state.localFallbackPrices || [];
+
+    // Exact match
+    let match = list.find(
+      (p) =>
+        p.commodity.toLowerCase() === commodity.toLowerCase() &&
+        p.state.toLowerCase() === stateVal.toLowerCase() &&
+        p.district.toLowerCase() === district.toLowerCase()
+    );
+
+    let locationNote = "Showing offline benchmark data from verified records.";
+
+    // State-level match
+    if (!match) {
+      const stateMatches = list.filter(
+        (p) =>
+          p.commodity.toLowerCase() === commodity.toLowerCase() &&
+          p.state.toLowerCase() === stateVal.toLowerCase()
+      );
+      if (stateMatches.length > 0) {
+        match = stateMatches[0];
+        locationNote = `Offline Benchmark: Showing typical rates for ${match.district}, ${match.state} (Nearby district benchmark).`;
+      }
+    }
+
+    if (!match) return null;
+
+    return {
+      commodity: match.commodity,
+      commodity_hindi: match.commodity_hindi,
+      state: stateVal,
+      district: district,
+      market: match.market,
+      arrival_date: match.arrival_date,
+      data_status: "fallback",
+      is_offline: true,
+      source: match.source || "Agmarknet (Offline Benchmark Data)",
+      location_note: locationNote,
+      prices: {
+        quintal: {
+          min: match.min_price_quintal,
+          max: match.max_price_quintal,
+          modal: match.modal_price_quintal,
+          unit: "₹/quintal"
+        },
+        kg: {
+          min: match.min_price_kg,
+          max: match.max_price_kg,
+          modal: match.modal_price_kg,
+          unit: "₹/kg"
+        }
+      },
+      nearby_markets: match.nearby_markets || []
+    };
+  } catch (e) {
+    console.error("Error retrieving offline price reference:", e);
+    return null;
+  }
+}
+
 // Fetch Price Reference from Backend
 async function fetchPrice(commodity, stateVal, district) {
   const loadingEl = document.getElementById("price-loading-state");
@@ -306,6 +446,8 @@ async function fetchPrice(commodity, stateVal, district) {
   errorEl.classList.add("hidden");
   resultEl.classList.add("hidden");
 
+  let data = null;
+
   try {
     const params = new URLSearchParams({
       commodity,
@@ -313,34 +455,35 @@ async function fetchPrice(commodity, stateVal, district) {
       district
     });
     const res = await fetch(`/api/price?${params.toString()}`);
-    const data = await res.json();
-
-    loadingEl.classList.add("hidden");
-
-    if (data.data_status === "unavailable") {
-      errorEl.classList.remove("hidden");
-      document.getElementById("price-error-title").textContent =
-        state.lang === "hi"
-          ? "इस चयन के लिए वर्तमान में कोई डेटा उपलब्ध नहीं है।"
-          : "No data is currently available for this selection.";
-      document.getElementById("price-error-desc").textContent =
-        data.location_note || (state.lang === "hi" ? "कृपया पास का कोई अन्य जिला चुनें।" : "Please verify your selection or choose another nearby district.");
-      return;
+    if (res.ok) {
+      data = await res.json();
+    } else {
+      throw new Error(`Price API returned HTTP ${res.status}`);
     }
-
-    state.activePriceRef = data;
-    renderPriceResult(data);
-    resultEl.classList.remove("hidden");
-
-    // Prepopulate check-offer view state
-    syncOfferReferenceBar();
   } catch (err) {
-    console.error("Price fetch error:", err);
-    loadingEl.classList.add("hidden");
-    errorEl.classList.remove("hidden");
-    document.getElementById("price-error-title").textContent = "Unable to load market data.";
-    document.getElementById("price-error-desc").textContent = "Please check your connection and try again.";
+    console.warn("Price API network fetch failed. Attempting offline fallback:", err);
+    data = await getOfflinePriceReference(commodity, stateVal, district);
   }
+
+  loadingEl.classList.add("hidden");
+
+  if (!data || data.data_status === "unavailable") {
+    errorEl.classList.remove("hidden");
+    document.getElementById("price-error-title").textContent =
+      state.lang === "hi"
+        ? "इस चयन के लिए वर्तमान में कोई डेटा उपलब्ध नहीं है।"
+        : "No data is currently available for this selection.";
+    document.getElementById("price-error-desc").textContent =
+      (data && data.location_note) || (state.lang === "hi" ? "कृपया पास का कोई अन्य जिला चुनें।" : "Please verify your selection or choose another nearby district.");
+    return;
+  }
+
+  state.activePriceRef = data;
+  renderPriceResult(data);
+  resultEl.classList.remove("hidden");
+
+  // Prepopulate check-offer view state
+  syncOfferReferenceBar();
 }
 
 // Render Price Reference Result Card
@@ -357,7 +500,11 @@ function renderPriceResult(data) {
 
   // Data status badge
   const badgeEl = document.getElementById("res-data-badge");
-  if (data.data_status === "reported") {
+  const dict = (window.I18N && window.I18N[state.lang]) || {};
+  if (data.is_offline || !navigator.onLine) {
+    badgeEl.textContent = dict.badge_offline_benchmark || "OFFLINE BENCHMARK";
+    badgeEl.className = "badge badge-offline";
+  } else if (data.data_status === "reported" || data.data_status === "live") {
     badgeEl.textContent = state.lang === "hi" ? "दर्ज आंकड़े" : "REPORTED";
     badgeEl.className = "badge badge-reported";
   } else if (data.data_status === "fallback") {
@@ -385,7 +532,10 @@ function renderPriceResult(data) {
   document.getElementById("res-modal-price").textContent = `₹${kgPrices.modal}/kg`;
   const nearbyBadge = document.getElementById("res-nearby-badge");
   if (nearbyBadge) {
-    if (data.data_status === "live") {
+    if (data.is_offline || !navigator.onLine) {
+      nearbyBadge.textContent = "[Offline Benchmark]";
+      nearbyBadge.className = "badge badge-subtle badge-offline";
+    } else if (data.data_status === "live" || data.data_status === "reported") {
       nearbyBadge.textContent = "[Live Reported]";
       nearbyBadge.className = "badge badge-subtle badge-reported";
     } else {
@@ -400,7 +550,9 @@ function renderPriceResult(data) {
   document.getElementById("res-arrival-date").textContent = data.arrival_date;
   document.getElementById("res-source-name").textContent = data.source;
   document.getElementById("res-status-text").textContent =
-    data.data_status === "reported" ? "Live Mandi Reported Data" : "Verified Benchmark Data";
+    data.is_offline || !navigator.onLine
+      ? "Offline Benchmark Data (Indicative)"
+      : (data.data_status === "reported" ? "Live Mandi Reported Data" : "Verified Benchmark Data");
 
   // Nearby markets
   const nearbyBox = document.getElementById("res-nearby-markets-box");
@@ -531,7 +683,7 @@ async function handleCheckOffer(event) {
   loadingEl.classList.remove("hidden");
   resultCard.classList.add("hidden");
 
-  try {
+    try {
     const res = await fetch("/api/check-offer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -545,25 +697,27 @@ async function handleCheckOffer(event) {
       })
     });
 
-    const data = await res.json();
-    loadingEl.classList.add("hidden");
-
-    if (!data.success && data.error) {
-      showToast(data.error);
-      return;
+    if (res.ok) {
+      data = await res.json();
+    } else {
+      throw new Error(`Check offer API returned HTTP ${res.status}`);
     }
-
-    state.activeEvaluation = data;
-    renderOfferResult(data);
-    resultCard.classList.remove("hidden");
-
-    // Scroll smoothly to the result card
-    resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (err) {
-    console.error("Evaluation error:", err);
-    loadingEl.classList.add("hidden");
-    showToast("Failed to evaluate offer. Check server connection.");
+    console.warn("Offer evaluation network request failed. Evaluating against local offline benchmark:", err);
+    data = await evaluateOfferOffline(commodity, stateVal, district, offerPrice, unit, quantity);
   }
+
+  loadingEl.classList.add("hidden");
+
+  if (!data || (!data.success && data.error)) {
+    showToast((data && data.error) || "Failed to evaluate offer.");
+    return;
+  }
+
+  state.activeEvaluation = data;
+  renderOfferResult(data);
+  resultCard.classList.remove("hidden");
+  resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // Render Offer Evaluation Result (Section 3 & 13)
@@ -635,7 +789,9 @@ function renderOfferResult(data) {
   document.getElementById("eval-arrival-date").textContent = data.metadata.arrival_date;
   document.getElementById("eval-source-name").textContent = data.metadata.source;
   document.getElementById("eval-status-name").textContent =
-    data.metadata.data_status === "reported" ? "Live Mandi Reported" : "Verified Benchmark Data";
+    data.is_offline || !navigator.onLine
+      ? "Offline Benchmark Data"
+      : (data.metadata.data_status === "reported" ? "Live Mandi Reported" : "Verified Benchmark Data");
 }
 
 function resetOfferForm() {
@@ -645,17 +801,25 @@ function resetOfferForm() {
   document.getElementById("input-offered-price").focus();
 }
 
-// Load Government Schemes from Backend
+// Load Government Schemes from Backend (with local fallback)
 async function loadSchemes() {
   try {
     const res = await fetch("/api/schemes");
+    if (!res.ok) throw new Error(`Schemes API returned HTTP ${res.status}`);
     const data = await res.json();
     state.schemes = data.schemes || [];
-    populateSchemeCategories();
-    renderSchemes();
   } catch (err) {
-    console.error("Failed to load schemes:", err);
+    console.warn("API schemes fetch failed, loading local fallback schemes:", err);
+    try {
+      const localRes = await fetch("/data/schemes.json");
+      const localData = await localRes.json();
+      state.schemes = localData || [];
+    } catch (fallbackErr) {
+      console.error("Critical: Failed to load local fallback schemes:", fallbackErr);
+    }
   }
+  populateSchemeCategories();
+  renderSchemes();
 }
 
 // Populate Category Pills
@@ -865,6 +1029,98 @@ async function handleManualWeatherLookup(event) {
   await fetchWeather({ state: stateVal, district });
 }
 
+
+// Retrieve benchmark weather forecast when offline
+async function getOfflineWeather(params) {
+  try {
+    if (!state.localFallbackWeather) {
+      const res = await fetch("/data/fallback_weather.json");
+      state.localFallbackWeather = await res.json();
+    }
+    const list = state.localFallbackWeather || [];
+    let match = null;
+
+    if (params.district) {
+      match = list.find((w) => w.district.toLowerCase() === params.district.toLowerCase());
+    }
+    if (!match && params.state) {
+      match = list.find((w) => w.state.toLowerCase() === params.state.toLowerCase());
+    }
+    if (!match && list.length > 0) {
+      match = list[0];
+    }
+
+    if (!match) return null;
+
+    const rainChance = match.today ? match.today.chance_of_rain : 0;
+    const temp = match.current ? match.current.temp_c : 25;
+
+    let possibility = {
+      status: "low_rain",
+      label: "Low Rain Possibility",
+      label_hindi: "कम बारिश की संभावना",
+      description: "Low chance of rain. Field activities and pesticide spraying generally safe.",
+      description_hindi: "बारिश की कम संभावना। खेत के काम और कीटनाशक छिड़काव सामान्यतः सुरक्षित।",
+      icon: "🌤️",
+      badge_class: "weather-possibility-low"
+    };
+
+    if (rainChance >= 60) {
+      possibility = {
+        status: "high_rain",
+        label: "High Rain Possibility",
+        label_hindi: "भारी बारिश की संभावना",
+        description: "Heavy rain expected. Avoid pesticide spraying and check drainage.",
+        description_hindi: "भारी बारिश की संभावना। कीटनाशक छिड़काव से बचें और जल निकासी की जांच करें।",
+        icon: "🌧️",
+        badge_class: "weather-possibility-high"
+      };
+    } else if (rainChance >= 30) {
+      possibility = {
+        status: "moderate_rain",
+        label: "Moderate Rain Possibility",
+        label_hindi: "मध्यम बारिश की संभावना",
+        description: "Scattered showers likely. Plan harvest and drying accordingly.",
+        description_hindi: "हल्की बारिश संभव। कटाई और सुखाने की योजना उसी अनुसार बनाएं।",
+        icon: "☁️",
+        badge_class: "weather-possibility-moderate"
+      };
+    } else if (temp >= 36) {
+      possibility = {
+        status: "high_heat",
+        label: "High Heat Advisory",
+        label_hindi: "अत्यधिक गर्मी की चेतावनी",
+        description: "High temperature expected. Ensure adequate irrigation to protect crops.",
+        description_hindi: "उच्च तापमान की संभावना। फसलों को बचाने के लिए पर्याप्त सिंचाई सुनिश्चित करें।",
+        icon: "☀️",
+        badge_class: "weather-possibility-heat"
+      };
+    }
+
+    return {
+      location: {
+        name: match.district,
+        district: match.district,
+        district_hindi: match.district_hindi,
+        state: match.state,
+        state_hindi: match.state_hindi,
+        country: "India",
+        display: `${match.district}, ${match.state}`
+      },
+      current: match.current,
+      today: match.today,
+      forecast_3day: match.forecast_3day,
+      possibility,
+      source: match.source || "WeatherAPI.com (Offline Benchmark Data)",
+      data_status: "fallback",
+      is_offline: true
+    };
+  } catch (e) {
+    console.error("Error retrieving offline weather:", e);
+    return null;
+  }
+}
+
 // Fetch Weather Outlook from Backend
 async function fetchWeather(params) {
   const loadingEl = document.getElementById("weather-loading-state");
@@ -875,39 +1131,37 @@ async function fetchWeather(params) {
   errorEl.classList.add("hidden");
   resultCard.classList.add("hidden");
 
+  let data = null;
+
   try {
     console.log("[Frontend Weather] Requesting /api/weather with params:", params);
     const urlParams = new URLSearchParams(params);
     const res = await fetch(`/api/weather?${urlParams.toString()}`);
-    const data = await res.json();
-    console.log("[Frontend Weather] Received weather response:", data);
-
-    loadingEl.classList.add("hidden");
-
-    if (!res.ok || data.error) {
-      errorEl.classList.remove("hidden");
-      document.getElementById("weather-error-title").textContent =
-        state.lang === "hi" ? "मौसम डेटा लोड नहीं हो सका" : "Unable to load weather data";
-      document.getElementById("weather-error-desc").textContent =
-        data.error || (state.lang === "hi" ? "कृपया पुनः प्रयास करें या अन्य ज़िला चुनें।" : "Please try again or select your district manually.");
-      return;
+    if (res.ok) {
+      data = await res.json();
+    } else {
+      throw new Error(`Weather API returned HTTP ${res.status}`);
     }
-
-    state.activeWeather = data;
-    renderWeather(data);
-    resultCard.classList.remove("hidden");
-    resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (err) {
-    console.error("Weather fetch error:", err);
-    loadingEl.classList.add("hidden");
+    console.warn("Weather API network fetch failed. Attempting offline fallback:", err);
+    data = await getOfflineWeather(params);
+  }
+
+  loadingEl.classList.add("hidden");
+
+  if (!data || data.error) {
     errorEl.classList.remove("hidden");
     document.getElementById("weather-error-title").textContent =
-      state.lang === "hi" ? "नेटवर्क त्रुटि" : "Network error";
+      state.lang === "hi" ? "मौसम डेटा लोड नहीं हो सका" : "Unable to load weather data";
     document.getElementById("weather-error-desc").textContent =
-      state.lang === "hi"
-        ? "सर्वर से कनेक्ट करने में विफल। कृपया अपना इंटरनेट कनेक्शन जांचें।"
-        : "Failed to connect to the server. Please check your connection.";
+      (data && data.error) || (state.lang === "hi" ? "कृपया पुनः प्रयास करें या अन्य ज़िला चुनें।" : "Please try again or select your district manually.");
+    return;
   }
+
+  state.activeWeather = data;
+  renderWeather(data);
+  resultCard.classList.remove("hidden");
+  resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 // Render Weather Outlook Card
@@ -936,7 +1190,11 @@ function renderWeather(data) {
   document.getElementById("weather-location-text").textContent = locText;
 
   const statusBadge = document.getElementById("weather-status-badge");
-  if (data.data_status === "live") {
+  const dict = (window.I18N && window.I18N[state.lang]) || {};
+  if (data.is_offline || !navigator.onLine) {
+    statusBadge.textContent = dict.badge_offline_benchmark || "OFFLINE BENCHMARK";
+    statusBadge.className = "badge badge-offline";
+  } else if (data.data_status === "live") {
     statusBadge.textContent = state.lang === "hi" ? "दर्ज आंकड़े" : "REPORTED LIVE";
     statusBadge.className = "badge badge-reported";
   } else {
@@ -1159,6 +1417,19 @@ async function analyzeCrop() {
 
   if (!state.cropImage) {
     showToast(dict.error_no_image_selected || "Please upload or capture a photo first.");
+    return;
+  }
+
+  if (!navigator.onLine) {
+    const errorEl = document.getElementById("crop-doctor-error");
+    if (errorEl) {
+      errorEl.classList.remove("hidden");
+      document.getElementById("crop-error-title").textContent =
+        dict.offline_crop_doctor_warning || "Internet Connection Required";
+      document.getElementById("crop-error-desc").textContent =
+        "AI Crop Doctor requires an active internet connection to diagnose leaf images. Please reconnect to examine your crops.";
+      errorEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
     return;
   }
 

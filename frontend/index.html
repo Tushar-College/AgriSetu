@@ -5,12 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>AgriSetu — Farmer Market Price Reference & Offer Evaluation Platform</title>
   <meta name="description" content="Know recent reported market price ranges and evaluate buyer offers objectively with neutral, sourced benchmark data.">
+  <meta name="theme-color" content="#1e5631">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AgriSetu">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
+  <link rel="apple-touch-icon" href="/assets/icon-192.png">
   <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Noto+Sans+Gurmukhi:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Offline Connection Status Banner -->
+  <aside id="offline-indicator-banner" class="offline-banner hidden" role="status" aria-live="polite">
+    <div class="container offline-banner-inner">
+      <span class="offline-icon" aria-hidden="true">📡</span>
+      <span class="offline-text" id="offline-banner-message" data-i18n="offline_banner_text">You are offline. Showing local benchmark and cached data.</span>
+      <span class="offline-badge" data-i18n="offline_badge">OFFLINE</span>
+    </div>
+  </aside>
+
   <!-- Global App Header -->
   <header class="app-header" role="banner">
     <div class="container header-container">
